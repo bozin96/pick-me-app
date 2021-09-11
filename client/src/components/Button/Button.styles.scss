@@ -1,0 +1,16 @@
+@import '../../styles/colors';
+
+.pm-button{
+    &--primary{
+        background-color: $primary;
+        color: white;
+    }
+    &--secondary{
+        background-color: $secondary;
+        color: #34495e;
+    }
+    border-radius: 24px;
+    padding: 16px 24px;
+    border: none;
+    cursor: pointer;
+}

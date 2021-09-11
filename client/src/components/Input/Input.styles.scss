@@ -1,0 +1,13 @@
+
+.pm-input{
+    font-size: 12px;
+    height: 24px;
+    >input {
+        border:2px solid #07617d;
+            height: 100%;
+        padding: 8px 16px;
+        border-radius: 24px;
+        outline: none;
+        overflow: hidden;
+    }
+}
