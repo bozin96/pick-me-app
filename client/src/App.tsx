@@ -1,14 +1,13 @@
 import React from 'react';
 import './App.scss';
-import Home from './pages/Home';
+import Ride from './pages/Ride';
 
 const App: React.FC = () => {
   const baseClass = 'pm-app';
   return (
     <div className={baseClass}>
       <header className={`${baseClass}__header`} />
-
-      <Home />
+      <Ride />
     </div>
   );
 };
