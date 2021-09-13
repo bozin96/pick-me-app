@@ -1,0 +1,7 @@
+server/PickMeApp.Core/bin/
+server/PickMeApp.Core/obj/
+server/PickMeApp.Data/bin/
+server/PickMeApp.Data/obj/
+server/PickMeApp.Web/bin/
+server/PickMeApp.Web/obj/
+.vs
