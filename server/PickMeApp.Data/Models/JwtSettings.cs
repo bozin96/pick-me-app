@@ -10,5 +10,9 @@ namespace PickMeApp.Application.Models
         public string Secret { get; set; }
 
         public TimeSpan TokenLifetime { get; set; }
+
+        public string ValidIssuer { get; set; }
+
+        public string ValidAudience { get; set; }
     }
 }

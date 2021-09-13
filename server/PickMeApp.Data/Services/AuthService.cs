@@ -23,22 +23,19 @@ namespace PickMeApp.Application.Services
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IConfiguration Configuration;
 
         public AuthService(
                 ApplicationDbContext dbContext,
                 JwtSettings jwtSettings,
                 TokenValidationParameters tokenValidationParameters,
                 UserManager<ApplicationUser> userManager,
-                RoleManager<ApplicationRole> roleManager,
-                IConfiguration configuration)
+                RoleManager<ApplicationRole> roleManager)
         {
             _dbContext = dbContext;
             _jwtSettings = jwtSettings;
             _tokenValidationParameters = tokenValidationParameters;
             _userManager = userManager;
             _roleManager = roleManager;
-            Configuration = configuration;
         }
 
         public async Task<AuthenticationResult> LoginUserAsync(JwtTokenRequest request)
@@ -208,14 +205,14 @@ namespace PickMeApp.Application.Services
                 }
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWTSecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Issuer = "pickmeapp.com",
-                Audience = "api.pickmeapp.com",
+                Issuer = _jwtSettings.ValidIssuer,
+                Audience = _jwtSettings.ValidAudience,
                 Expires = DateTime.UtcNow.Add(_jwtSettings.TokenLifetime),
                 SigningCredentials = creds
             };

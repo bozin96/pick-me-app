@@ -19,9 +19,7 @@ using System.Threading.Tasks;
 namespace PickMeApp.Web.Controllers
 {
     [Route("api/rides")]
-    //[AllowAnonymous]
-    //[Authorize]
-    //[Authorize(Roles ="Client")]
+    [Authorize(Roles ="Client")]
     public class RidesController : ApiController
     {
         private readonly IRideRepository _rideRepository;
@@ -248,6 +246,41 @@ namespace PickMeApp.Web.Controllers
 
         [HttpPut("{rideId}/check-in", Name = "CheckInForRide")]
         public async Task<IActionResult> CheckInForRide(Guid rideId, RideForUpdateDto ride)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ResponseModelStateErrors();
+            }
+
+            var rideFromRepo = await _rideRepository.GetByIdAsync(rideId);
+
+            if (rideFromRepo == null)
+            {
+                var rideToAdd = _mapper.Map<Ride>(ride);
+                rideToAdd.Id = rideId;
+
+                await _rideRepository.AddAsync(rideToAdd);
+
+
+                var rideToReturn = _mapper.Map<RideDto>(rideToAdd);
+
+                return CreatedAtRoute("GetRide",
+                    new { rideId = rideToReturn.Id },
+                    rideToReturn);
+            }
+
+            // map the entity to a RideDto
+            // apply the updated field values to that dto
+            // map the RideDto back to an entity
+            _mapper.Map(ride, rideFromRepo);
+
+            await _rideRepository.UpdateAsync(rideFromRepo);
+
+            return NoContent();
+        }
+
+        [HttpPut("{rideId}/confirm-check-in", Name = "ConfirmCheckInForRide")]
+        public async Task<IActionResult> ConfirmCheckInForRide(Guid rideId, RideForUpdateDto ride)
         {
             if (!ModelState.IsValid)
             {
