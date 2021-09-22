@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  client:
+    build: ./client
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+      - '35729:35729' # warm reloading for react create app
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - server
+
+  server:
+    build: ./server/PickMeApp.Web
+    volumes:
+      - ./server:/usr/src/app/
+    ports:
+      - "51052:51052"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=test

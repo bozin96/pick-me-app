@@ -14,6 +14,8 @@ namespace PickMeApp.Core.Models
 
         public float EndLatitude { get; set; }
 
+        public float Price { get; set; }
+
         public float Distance { get; set; } // distance in meters.
 
         public int Time { get; set; } // time duration in seconds.

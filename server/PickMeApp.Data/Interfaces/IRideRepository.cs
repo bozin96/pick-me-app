@@ -9,6 +9,8 @@ namespace PickMeApp.Application.Interfaces
 {
     public interface IRideRepository : IGenericRepository<Ride>
     {
-        Task<PagedList<Ride>> ListAsync(RideResourceParameters resourceParameters);
+        Task<PagedList<Ride>> ListAsync(RideResourceParameters resourceParameters, string driverId="");
+
+        Task<PagedList<Ride>> ListAsync(MyRideResourceParameters resourceParameters);
     }
 }

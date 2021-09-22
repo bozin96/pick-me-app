@@ -6,7 +6,8 @@ namespace PickMeApp.Core.Models.Notification
 {
     public enum NotificationType 
     { 
-        RideRequest, 
-        RideReview
+        RequestForRide,
+        ResponseOnRideRequest,
+        RideReview,
     }
 }

@@ -21,7 +21,7 @@ using PickMeApp.Web.Models;
 using Microsoft.OpenApi.Models;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Repositories;
-
+using Microsoft.AspNetCore.Http.Connections;
 
 namespace PickMeApp.Web
 {
@@ -38,7 +38,6 @@ namespace PickMeApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
             string connString = Configuration["DefaultConnection"];
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connString));
 
             services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseNpgsql(connString));
@@ -100,7 +99,11 @@ namespace PickMeApp.Web
 
             services.AddControllers();
 
-            services.AddSignalR().AddJsonProtocol(options =>
+            services.AddSignalR(hubOptions =>
+            {
+                hubOptions.EnableDetailedErrors = true;
+                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            }).AddJsonProtocol(options =>
             {
                 options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;
             });
@@ -110,13 +113,17 @@ namespace PickMeApp.Web
                 {
                     builder.AllowAnyMethod()
                            .AllowAnyHeader()
-                           .WithOrigins("http://localhost:3000")
-                           .AllowCredentials();
+                           //.WithOrigins("http://localhost:3000")
+                           .AllowAnyOrigin();
+                    //.AllowCredentials();
                 }));
 
             services.AddSingleton<IUserIdProvider, UserIdProvider>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IRideRepository, RideRepository>();
+            services.AddTransient<INotificationRepository, NotificationRepository>();
+            services.AddTransient<IPassengerOnRideRepository, PassengerOnRideRepository>();
+            services.AddTransient<IChatRepository, ChatRepository>();
             services.AddTransient<IRideService, RideService>();
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
@@ -139,17 +146,17 @@ namespace PickMeApp.Web
             else
             {
                 app.UseHttpsRedirection();
-                app.UseCors("CorsPolicy");
-            }
 
+            }
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<NotificationsHub>("/notifications");
-                endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<NotificationsHub>("/notifications", options => options.Transports = HttpTransportType.WebSockets);
+                endpoints.MapHub<ChatHub>("/chat", options => options.Transports = HttpTransportType.WebSockets);
                 endpoints.MapControllers();
             });
 

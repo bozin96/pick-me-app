@@ -12,5 +12,12 @@ namespace PickMeApp.Application.Interfaces
     {
         Ride PrepareRideForCreation(Ride ride);
 
+        IEnumerable<RideDto> CheckFreeSeats(IEnumerable<RideDto> rideDto, RideResourceParameters resourceParameters);
+
+        bool HasFreeSeats(Ride ride, RideRequestDto rideRequest);
+
+        bool HasPassengers(Ride ride);
+
+        (StatusErrorDto, Ride) AcceptRideRequest(Ride ride, RideRequestDto rideRequest);
     }
 }

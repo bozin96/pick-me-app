@@ -23,7 +23,7 @@ namespace PickMeApp.Application.Helpers
         public DateTime DateTime { get; set; }
 
         [Required]
-        public int NumberOfPlaces { get; set; }
+        public int NumberOfPassengers { get; set; }
 
         public float Langitude { get; set; }
 

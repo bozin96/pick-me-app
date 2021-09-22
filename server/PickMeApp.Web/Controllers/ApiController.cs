@@ -9,13 +9,30 @@ using System.Threading.Tasks;
 namespace PickMeApp.Web.Controllers
 {
     [ApiController]
-    public class ApiController : ControllerBase
+    public class ApiController : Controller
     {
         public ApiController()
         {
 
         }
 
+        protected IActionResult ReturnError(int statusCode, string error)
+        {
+            return StatusCode(statusCode, new
+            {
+                success = false,
+                errors = new string[] { error }
+            });
+        }
+
+        protected IActionResult ReturnErrors(int statusCode, List<string> errors)
+        {
+            return StatusCode(statusCode, new
+            {
+                success = false,
+                errors = errors
+            });
+        }
 
         protected IActionResult GetResponse<T>(BaseResponse<T> result = null)
         {

@@ -43,6 +43,11 @@ namespace PickMeApp.Web.Controllers
         [Route("login")]
         public async Task<IActionResult> Login(JwtTokenRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return ResponseModelStateErrors();
+            }
+
             if (!string.IsNullOrEmpty(request.Username))
             {
                 _logger.LogInformation($"User {request.Username} is attempting to request an API Auth Token.");
@@ -106,7 +111,7 @@ namespace PickMeApp.Web.Controllers
             AuthenticationResult result = await _authService.RegisterUserAsync(request);
 
             if (result == null || !result.Success)
-                return BadRequest(new { error = "Could not verify username and password" });
+                return BadRequest(new { message = result.Errors });
 
             return Ok(result);
         }

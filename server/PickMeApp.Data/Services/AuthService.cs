@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PickMeApp.Application.Models;
+using PickMeApp.Core.Constants;
 using PickMeApp.Core.Models;
 using PickMeApp.Data.Interfaces;
 using System;
@@ -109,7 +110,7 @@ namespace PickMeApp.Application.Services
             _dbContext.RefreshTokens.Update(storedRefreshToken);
             await _dbContext.SaveChangesAsync();
 
-            var user = await _userManager.FindByNameAsync(validatedToken.Claims.Single(x => x.Type == ClaimTypes.Name).Value);
+            var user = await _userManager.FindByIdAsync(validatedToken.Claims.Single(x => x.Type == ClaimTypes.Name).Value);
 
             return await GenerateAuthenticationResultForUserAsync(user, storedRefreshToken);
         }
@@ -172,7 +173,8 @@ namespace PickMeApp.Application.Services
             {
                 Success = true,
                 Token = tokenHandler.WriteToken(token),
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Token,
+                UserId = user.Id
             };
         }
 
@@ -183,8 +185,9 @@ namespace PickMeApp.Application.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("id", user.Id),
-                new Claim(ClaimTypes.Name, user.UserName)
+                new Claim(CustomClaimTypes.Id, user.Id),
+                new Claim(ClaimTypes.Name, user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
             // add roles and role claims to jwt claims

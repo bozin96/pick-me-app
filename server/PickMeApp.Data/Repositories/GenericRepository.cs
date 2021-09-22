@@ -61,6 +61,15 @@ namespace PickMeApp.Application.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(T entity)
+        {
+            if (entity == null)
+                throw new KeyNotFoundException();
+
+            _entities.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<bool> ExistsAsync(Guid id)
         {
             if (id == Guid.Empty)

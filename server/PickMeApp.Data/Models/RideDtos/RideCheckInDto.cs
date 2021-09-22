@@ -11,6 +11,6 @@ namespace PickMeApp.Application.Models.RideDtos
         public Guid RideId { get; set; }
         
         [Required]
-        public int NumberOfPlaces { get; set; }
+        public int NumberOfPassengers { get; set; }
     }
 }

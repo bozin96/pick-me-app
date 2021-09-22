@@ -163,6 +163,9 @@ namespace PickMeApp.Application.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<float>("AverageRate")
+                        .HasColumnType("real");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -193,9 +196,6 @@ namespace PickMeApp.Application.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("LoginCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("MiddleName")
                         .HasColumnType("character varying(150)")
                         .HasMaxLength(150);
@@ -207,6 +207,9 @@ namespace PickMeApp.Application.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
+
+                    b.Property<int>("NumberOfRates")
+                        .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
@@ -240,6 +243,134 @@ namespace PickMeApp.Application.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Message.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FirstUserId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastMessageTimeStamp")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("SecondUserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FirstUserId");
+
+                    b.HasIndex("SecondUserId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Message.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("SendUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("SendUserId");
+
+                    b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Notification.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Header")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RideId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserFromId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserToId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RideId");
+
+                    b.HasIndex("UserFromId");
+
+                    b.HasIndex("UserToId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.PassengerOnRide", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DriverName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EndWaypoint")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PassengerId")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Review")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("RideId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("StartWaypoint")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PassengerId");
+
+                    b.HasIndex("RideId");
+
+                    b.ToTable("PassengerOnRides");
                 });
 
             modelBuilder.Entity("PickMeApp.Core.Models.RefreshToken", b =>
@@ -279,6 +410,9 @@ namespace PickMeApp.Application.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("DriverId")
+                        .HasColumnType("text");
+
                     b.Property<int>("NumberOfFreeSeats")
                         .HasColumnType("integer");
 
@@ -291,6 +425,9 @@ namespace PickMeApp.Application.Migrations
                     b.Property<string>("QueryField")
                         .HasColumnType("text");
 
+                    b.Property<int>("RouteIndex")
+                        .HasColumnType("integer");
+
                     b.Property<string>("RouteLegs")
                         .HasColumnType("text");
 
@@ -301,6 +438,8 @@ namespace PickMeApp.Application.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
 
                     b.ToTable("Rides");
                 });
@@ -366,11 +505,72 @@ namespace PickMeApp.Application.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PickMeApp.Core.Models.Message.Chat", b =>
+                {
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "FirstUser")
+                        .WithMany()
+                        .HasForeignKey("FirstUserId");
+
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "SecondUser")
+                        .WithMany()
+                        .HasForeignKey("SecondUserId");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Message.Message", b =>
+                {
+                    b.HasOne("PickMeApp.Core.Models.Message.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "SendUser")
+                        .WithMany()
+                        .HasForeignKey("SendUserId");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Notification.Notification", b =>
+                {
+                    b.HasOne("PickMeApp.Core.Models.Ride", "Ride")
+                        .WithMany()
+                        .HasForeignKey("RideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "UserFrom")
+                        .WithMany()
+                        .HasForeignKey("UserFromId");
+
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "UserTo")
+                        .WithMany()
+                        .HasForeignKey("UserToId");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.PassengerOnRide", b =>
+                {
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "Passenger")
+                        .WithMany("RidesAsPassenger")
+                        .HasForeignKey("PassengerId");
+
+                    b.HasOne("PickMeApp.Core.Models.Ride", "Ride")
+                        .WithMany("Passengers")
+                        .HasForeignKey("RideId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PickMeApp.Core.Models.RefreshToken", b =>
                 {
                     b.HasOne("PickMeApp.Core.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("PickMeApp.Core.Models.Ride", b =>
+                {
+                    b.HasOne("PickMeApp.Core.Models.ApplicationUser", "Driver")
+                        .WithMany("RidesAsDriver")
+                        .HasForeignKey("DriverId");
                 });
 #pragma warning restore 612, 618
         }

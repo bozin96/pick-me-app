@@ -1,7 +1,10 @@
 ﻿using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
+using PickMeApp.Application.Models.NotificationDtos;
+using PickMeApp.Application.Models.PassengerOnRideDtos;
 using PickMeApp.Application.Models.RideDtos;
 using PickMeApp.Core.Models;
+using PickMeApp.Core.Models.Notification;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +26,32 @@ namespace PickMeApp.Application.Services
               { "PetFriendly", new PropertyMappingValue(new List<string>() { "PetFriendly" }) }
           };
 
+        private Dictionary<string, PropertyMappingValue> _passengerOnRideMapping =
+        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Id", new PropertyMappingValue(new List<string>() { "Id" }) },
+            { "Review", new PropertyMappingValue(new List<string>() { "Review" }) },
+            { "StartWaypoint", new PropertyMappingValue(new List<string>() { "StartPlace" }) },
+            { "EndWaypoint", new PropertyMappingValue(new List<string>() { "EndPlace" }) },
+            { "DriverName", new PropertyMappingValue(new List<string>() { "DriverName" }) },
+            { "StartDate", new PropertyMappingValue(new List<string>() { "StartDate" }) }
+        };
+
+        private Dictionary<string, PropertyMappingValue> _notificationPropertyMapping =
+        new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Id", new PropertyMappingValue(new List<string>() { "Id" }) },
+            { "Type", new PropertyMappingValue(new List<string>() { "Type" }) },
+            { "Header", new PropertyMappingValue(new List<string>() { "Header" }) },
+        };
+
         private IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
         {
             _propertyMappings.Add(new PropertyMapping<RideDto, Ride>(_ridePropertyMapping));
+            _propertyMappings.Add(new PropertyMapping<PassengerOnRideDto, PassengerOnRide>(_passengerOnRideMapping));
+            _propertyMappings.Add(new PropertyMapping<NotificationDto, Notification>(_notificationPropertyMapping));
         }
 
         public bool ValidMappingExistsFor<TSource, TDestination>(string fields)

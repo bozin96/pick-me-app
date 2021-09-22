@@ -28,7 +28,13 @@ namespace PickMeApp.Core.Models
 
         public byte[] UserPhoto { get; set; }
 
-        public int? LoginCount { get; set; }
+        public float AverageRate { get; set; }
+
+        public int NumberOfRates { get; set; }
+
+        public List<Ride> RidesAsDriver { get; set; }
+
+        public List<PassengerOnRide> RidesAsPassenger { get; set; }
     }
 
     public class ApplicationRole : IdentityRole
