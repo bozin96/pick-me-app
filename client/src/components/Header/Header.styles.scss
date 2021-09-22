@@ -1,0 +1,34 @@
+@import "../../styles/colors";
+
+.pm-header.ui.header {
+    background-color: $background;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    margin-bottom: 0;
+    .ui.menu {
+        display: flex;
+        background-color: $background;
+        width: 100%;
+        border: none;
+        outline: none;
+        justify-content: space-between;
+        > div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .item {
+            border: none;
+            outline: none;
+            a {
+                color: white !important;
+            }
+            &:nth-child(2) {
+                flex: 1;
+            }
+            font-size: 22px;
+        }
+    }
+}

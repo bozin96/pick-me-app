@@ -1,0 +1,9 @@
+.pm-map {
+    flex: 1;
+    height: 500px;
+    width: 500px;
+    &__container {
+        display: flex;
+        justify-content: center;
+    }
+}

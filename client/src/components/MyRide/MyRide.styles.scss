@@ -1,0 +1,10 @@
+.ui.card {
+    .ui.header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .ui.button {
+        height: 32px;
+    }
+}

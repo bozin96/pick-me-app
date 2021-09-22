@@ -1,0 +1,11 @@
+.pm-notifications {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    flex: 1;
+    &.ui.grid {
+        padding: 64px;
+    }
+}
