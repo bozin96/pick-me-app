@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { defer, map, Observable } from 'rxjs';
 import httpClient from '../api/httpClient';
 import {
-    AuthApiResponse, MyRideInterface, UserLoginInteface, UserRegisterInteface,
+    AuthApiResponse, MyRideInterface, User, UserLoginInteface, UserRegisterInteface,
 } from '../types/index';
 
 const login = (data: UserLoginInteface): Observable<AuthApiResponse> => defer(() => httpClient.post('/auth/login', data)).pipe(map((res) => res.data as AuthApiResponse));
@@ -26,6 +26,9 @@ const reviewRideRequest = (rideId:any, data:any): Observable<any> => defer(() =>
 const getUserRidesAsDriver = (userId:string, params:any):Observable<MyRideInterface[]> => defer(() => httpClient.get(`/users/${userId}/rides-as-driver`, { params })).pipe(map((res:AxiosResponse) => res.data as MyRideInterface[]));
 const getUserRidesAsPassenger = (userId:string, params:any = null):Observable<MyRideInterface[]> => defer(() => httpClient.get(`/users/${userId}/rides-as-passenger`, { params })).pipe(map((res:AxiosResponse) => res.data as MyRideInterface[]));
 
+const getUser = (userId:string):Observable<User> => defer(() => httpClient.get(`/users/${userId}`)).pipe(map((res:AxiosResponse) => res.data as User));
+
+const updateUser = (userId:string, data:Partial<User>):Observable<User> => defer(() => httpClient.put(`/users/${userId}`, data)).pipe(map((res:AxiosResponse) => res.data as User));
 export default {
     login,
     getRides,
@@ -36,4 +39,6 @@ export default {
     reviewRideRequest,
     getUserRidesAsDriver,
     getUserRidesAsPassenger,
+    getUser,
+    updateUser,
 };

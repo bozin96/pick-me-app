@@ -20,10 +20,19 @@
             align-items: center;
         }
         .item {
+            img {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin-left: 8px;
+            }
             border: none;
             outline: none;
             a {
                 color: white !important;
+                display: flex;
+                align-items: center;
             }
             &:nth-child(2) {
                 flex: 1;

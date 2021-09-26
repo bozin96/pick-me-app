@@ -3,6 +3,7 @@ import Home from '../pages/Home';
 import Notifications from '../pages/Notifications';
 import RideForm from '../pages/Ride/RideForm';
 import RideSearch from '../pages/Ride/RideSearch';
+import UserProfile from '../pages/UserProfile';
 import redirect from './modules/redirect';
 
 export default [
@@ -40,6 +41,14 @@ export default [
     component: Notifications,
     exact: false,
     authorized: true,
+
+  },
+  {
+    path: '/user-profile/:id',
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    component: UserProfile,
+    authorized: true,
+    exact: true,
 
   },
   {

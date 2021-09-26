@@ -4,8 +4,10 @@
 import React, {
     useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
+import { toast } from 'react-toastify';
 import { map as mapRxjs } from 'rxjs';
 import { Button, Form } from 'semantic-ui-react';
+import history from '../../../common/history';
 import { waypointsSubject } from '../../../common/observers';
 import useMap from '../../../hooks/useMap';
 import ApiService from '../../../services/Api.service';
@@ -13,6 +15,7 @@ import { Microsoft } from '../../../services/Map.service';
 import './RideForm.styles.scss';
 
 const RideForm: React.FC<any> = () => {
+    const [formSubmitting, setFormSubmitting] = useState(false);
     const [formState, setFormState] = useState<any>({
         destinations: [{
         }, {}],
@@ -170,7 +173,20 @@ const RideForm: React.FC<any> = () => {
             }),
         };
         console.log(submitObject);
-        ApiService.createRide(submitObject).subscribe((res) => console.log('asd'));
+        setFormSubmitting(true);
+        ApiService.createRide(submitObject).subscribe({
+            next(x) {
+                toast('Ride Created Succesfully');
+                setFormSubmitting(false);
+                setTimeout(() => {
+                    history.push('/dashboard');
+                }, 1000);
+            },
+            error(err) {
+                toast('Error Occured');
+                setFormSubmitting(false);
+            },
+        });
     };
     const baseClass = 'pm-ride-form';
 
@@ -197,7 +213,7 @@ const RideForm: React.FC<any> = () => {
                     />
                     <Form.Input label="Number of Seats" placeholder="Seats" name="numberOfPassengers" icon="dollar sign" iconPosition="left" onChange={handleDateChange} />
 
-                    <Button type="submit">Create Ride</Button>
+                    <Button type="submit" loading={formSubmitting}>Create Ride </Button>
 
                 </div>
                 <div className={`${baseClass}__options`}>

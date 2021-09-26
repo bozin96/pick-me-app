@@ -8,7 +8,7 @@ export default (shoudStart: boolean | null): void => {
     useEffect(() => {
         const establishConnection = (): void => {
             const connection = new HubConnectionBuilder()
-                .withUrl('http://e09c-178-17-18-13.ngrok.io/notifications', {
+                .withUrl('http://localhost:51052/notifications', {
                     skipNegotiation: true,
                     transport: HttpTransportType.WebSockets,
                     accessTokenFactory: () => CredentialsService.getToken(),

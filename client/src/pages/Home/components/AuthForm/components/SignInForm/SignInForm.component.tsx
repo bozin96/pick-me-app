@@ -40,7 +40,7 @@ const SignInForm: React.FC = () => {
                         errorMessage = errorData?.error || errorData?.title;
                     }
                 } else {
-                    errorMessage = 'Error occured while creating Legal Entity';
+                    errorMessage = 'Error occured';
                 }
                 console.log(errorMessage);
 

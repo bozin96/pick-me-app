@@ -3,6 +3,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useCallback } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import Header from '../../../components/Header';
 import EnhancedRoute from '../../routes/Enhanced';
 
 type RoutesProps = {
@@ -24,6 +25,8 @@ const MyRoutes:React.FC<RoutesProps> = (props:RoutesProps) => {
   );
 
   return (
+    <>
+    <Header />
     <Switch>
       {routes.map(({ path = '', exact = true, ...rest }) => (
         <Route
@@ -34,6 +37,7 @@ const MyRoutes:React.FC<RoutesProps> = (props:RoutesProps) => {
         />
       ))}
     </Switch>
+    </>
   );
 };
 

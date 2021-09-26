@@ -5,18 +5,18 @@ import RidesHistoryCard from '../../components/RidesHistoryCard';
 import './Dashboard.styles.scss';
 
 const Dashboard: React.FC = () => (
-<Grid divided columns="2" className="pm-dashboard">
+    <Grid divided columns="2" className="pm-dashboard">
         <Grid.Row>
             <Grid.Column>
-                <h2>My Drives</h2>
+                <h2>My Recent Drivers</h2>
                 <DrivesHistoryCard />
             </Grid.Column>
             <Grid.Column>
-                <h2>My Rides</h2>
+                <h2>My Recent Rides</h2>
                 <RidesHistoryCard />
             </Grid.Column>
         </Grid.Row>
-</Grid>
+    </Grid>
 );
 
 export default Dashboard;

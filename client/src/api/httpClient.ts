@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import Axios from 'axios';
+import { toast } from 'react-toastify';
 import CredentialsService from '../services/Credentials.service';
 
 const httpClient = Axios.create({
-  baseURL: 'http://e09c-178-17-18-13.ngrok.io/api/',
+  baseURL: 'http://localhost:51052/api/',
 
 });
 
@@ -29,8 +30,8 @@ httpClient.interceptors.response.use(
       if (error.response.data?.error === 'Wrong username or password') {
         console.error(error.response.data);
       } else {
-        // CredentialsService.setToken('');
-        // history.push('/auth');
+        toast('Unathorized');
+        CredentialsService.clearLocalStorage();
       }
     }
     if (error.response) {

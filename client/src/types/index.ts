@@ -21,7 +21,7 @@ export type MyRideInterface = {
     waypoints: Waypoint[];
     numberOfPassengers: number;
     petFriendly: boolean;
-    driverName:string
+    driverName: string
 
 }
 
@@ -43,7 +43,7 @@ export interface AuthApiResponse {
     refreshToken: string,
     success: boolean,
     token: string,
-    userId:string
+    userId: string
 }
 
 export interface RequestType {
@@ -56,4 +56,16 @@ export interface RequestType {
     UserFromImage: any,
     UserToId: string // "d3015522-d131-49dd-9220-4a50c0da3cd1
     Id: string
+}
+
+export interface User {
+    averageRate: number,
+    email: string,
+    firstName: string,
+    id: string,
+    lastName: string,
+    middleName: null,
+    numberOfRates: number
+    userPhoto: string | null
+    averateRate:number
 }
