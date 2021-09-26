@@ -1,14 +1,9 @@
-﻿using AutoMapper;
-using PickMeApp.Application.Helpers;
+﻿using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Models.RideDtos;
 using PickMeApp.Core.Models;
-using PickMeApp.Core.Models.Notification;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace PickMeApp.Application.Services
 {

@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json;
-using PickMeApp.Core.Models;
+﻿using PickMeApp.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PickMeApp.Application.Models.RideDtos
 {

@@ -1,7 +1,4 @@
-﻿using PickMeApp.Core.Models.Notification;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace PickMeApp.Application.Models.NotificationDtos
 {

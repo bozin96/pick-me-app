@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace PickMeApp.Application.Helpers
 {
     public class ResourceParameters

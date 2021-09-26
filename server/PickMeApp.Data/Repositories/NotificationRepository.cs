@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
-using PickMeApp.Core.Models;
 using PickMeApp.Core.Models.Notification;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Application.Repositories

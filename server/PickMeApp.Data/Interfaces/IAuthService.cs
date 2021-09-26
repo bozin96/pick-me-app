@@ -1,7 +1,4 @@
 ﻿using PickMeApp.Application.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Data.Interfaces

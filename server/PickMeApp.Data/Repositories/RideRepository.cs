@@ -4,12 +4,9 @@ using PickMeApp.Application.Extensions;
 using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Models.RideDtos;
-using PickMeApp.Application.Repositories;
 using PickMeApp.Core.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 

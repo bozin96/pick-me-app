@@ -2,7 +2,6 @@
 using PickMeApp.Application.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PickMeApp.Application.Services
 {

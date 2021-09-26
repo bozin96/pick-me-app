@@ -1,7 +1,6 @@
 ﻿using iComplyICO.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PickMeApp.Application.Models;
 using PickMeApp.Core.Constants;
