@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Models.ChatDtos;
 using PickMeApp.Core.Constants;
-using PickMeApp.Web.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +17,14 @@ namespace PickMeApp.Web.Controllers
     public class ChatsController : ApiController
     {
         private readonly IChatRepository _chatRepository;
-        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IMapper _mapper;
 
         public ChatsController(
             IChatRepository chatRepository,
-            IHubContext<ChatHub> hubContext)
+            IMapper mapper)
         {
             _chatRepository = chatRepository ?? throw new ArgumentNullException(nameof(chatRepository));
-            _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
@@ -43,7 +42,8 @@ namespace PickMeApp.Web.Controllers
             };
             Response.Headers.Add("X-Pagination", System.Text.Json.JsonSerializer.Serialize(paginationMetadata));
 
-            return Ok(chatsFromRepo);
+            List<ChatDto> chatDtos = _mapper.Map<List<ChatDto>>(chatsFromRepo);
+            return Ok(chatDtos);
         }
 
         [HttpPost]
@@ -54,7 +54,6 @@ namespace PickMeApp.Web.Controllers
                 return ReturnError(StatusCodes.Status409Conflict, "Chat already exist for these two users");
 
             var chat = await _chatRepository.CreateChat(currentUserId, request.UserId);
-
             return Ok(chat);
         }
 
@@ -73,23 +72,6 @@ namespace PickMeApp.Web.Controllers
             Response.Headers.Add("X-Pagination", System.Text.Json.JsonSerializer.Serialize(paginationMetadata));
 
             return Ok(messagesFromRepo);
-        }
-
-        [HttpPost("{chatId}/messages")]
-        public async Task<IActionResult> SendMessage(Guid chatId, MessageDto request)
-        {
-            var userId = GetUserId();
-            var message = await _chatRepository.CreateMessageAsync(chatId, request.Text, userId);
-
-            await _hubContext.Clients.Group(chatId.ToString())
-                .SendAsync("RecieveMessage", new
-                {
-                    Text = message.Text,
-                    SenderId = userId,
-                    Timestamp = message.Timestamp.ToString("dd/MM/yyyy hh:mm:ss")
-                });
-
-            return Ok();
         }
 
         #region Helpers

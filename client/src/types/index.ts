@@ -69,3 +69,13 @@ export interface User {
     userPhoto: string | null
     averateRate:number
 }
+
+export interface ChatMessageSend {
+    chatId:string;
+    text:string;
+}
+export interface ChatMessageReceive {
+    text:string;
+    senderId:string;
+    timestamp:string
+}

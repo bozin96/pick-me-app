@@ -1,0 +1,56 @@
+@import "../../styles/colors";
+.pm-chats {
+    display: flex;
+    background-color: white;
+    justify-content: center;
+    flex: 1;
+    padding-top: 120px;
+    > :first-child {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        height: 500px;
+    }
+    &--sidebar {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        justify-content: flex-start;
+        border: 1px solid $background;
+        background-color: $background;
+        width: 200px;
+        > div {
+            display: flex;
+            border: 1px solid $primary;
+            padding: 8px;
+            font-size: 18px;
+            color: white;
+            img {
+                width: 32px;
+                height: 32px;
+                margin-right: 16px;
+            }
+        }
+    }
+    &__container {
+        background-color: white;
+        display: flex;
+        justify-content: flex-end;
+        border: 1px solid $background;
+        flex-direction: column;
+        overflow: auto;
+        width: 500px;
+        height: 500px;
+        &__input-container {
+            display: flex;
+            .ui.input {
+                > input {
+                    flex: 1;
+                }
+            }
+            button {
+                min-width: 120px;
+            }
+        }
+    }
+}

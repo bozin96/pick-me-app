@@ -23,7 +23,6 @@ const RideRequestsCard: React.FC = () => {
         setIsFetching(false);
       },
       complete() {
-        console.log('done');
       },
     });
   }, []);

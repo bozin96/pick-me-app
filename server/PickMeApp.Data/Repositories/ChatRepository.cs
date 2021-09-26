@@ -6,7 +6,6 @@ using PickMeApp.Core.Models.Message;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Application.Repositories
@@ -27,6 +26,7 @@ namespace PickMeApp.Application.Repositories
             if (!string.IsNullOrEmpty(userId))
                 collection = collection.Where(e => e.FirstUserId == userId || e.SecondUserId == userId);
 
+            collection = collection.Include(e => e.FirstUser).Include(e => e.SecondUser);
             collection = collection.OrderByDescending(e => e.LastMessageTimeStamp);
 
             return await PagedList<Chat>.CreateAsync(collection,
@@ -80,8 +80,14 @@ namespace PickMeApp.Application.Repositories
             chat.LastMessageTimeStamp = message.Timestamp;
             _dbContext.Chats.Update(chat);
 
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
 
+            }
             return message;
         }
 

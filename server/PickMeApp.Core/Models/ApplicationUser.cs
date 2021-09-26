@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace PickMeApp.Core.Models
 {
@@ -27,6 +26,8 @@ namespace PickMeApp.Core.Models
         public DateTime DateCreated { get; set; }
 
         public byte[] UserPhoto { get; set; }
+
+        public byte[] UserAvatarPhoto { get; set; }
 
         public float AverageRate { get; set; }
 

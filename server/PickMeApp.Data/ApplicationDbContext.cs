@@ -4,10 +4,7 @@ using Newtonsoft.Json;
 using PickMeApp.Core.Models;
 using PickMeApp.Core.Models.Message;
 using PickMeApp.Core.Models.Notification;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-
 
 namespace iComplyICO.Data
 {

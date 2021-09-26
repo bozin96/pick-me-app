@@ -5,9 +5,6 @@ using PickMeApp.Application.Models.UserDtos;
 using PickMeApp.Core.Models;
 using PickMeApp.Core.Models.Notification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PickMeApp.Web.Profiles
 {
@@ -18,9 +15,12 @@ namespace PickMeApp.Web.Profiles
             CreateMap<UpdateUserDto, ApplicationUser>()
                 .ForMember(
                     dest => dest.UserPhoto,
-                    opt => opt.MapFrom(src => ImageHelper.ImageToBase64(src.UserImage)));
+                    opt => opt.MapFrom(src => ImageHelper.ImageFromBase64(src.UserPhoto)));
 
-            CreateMap<ApplicationUser, UserDto>();
+            CreateMap<ApplicationUser, UserDto>()
+                .ForMember(
+                    dest => dest.UserPhoto,
+                    opt => opt.MapFrom(src => src.UserPhoto == null ? null : Convert.ToBase64String(src.UserPhoto)));
 
             CreateMap<Notification, NotificationDto>()
                 .ForMember(

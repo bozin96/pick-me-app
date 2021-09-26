@@ -88,7 +88,7 @@ namespace PickMeApp.Web
                         var accessToken = context.Request.Query["access_token"];
 
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/notifications")))
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/notifications") || path.StartsWithSegments("/chats")))
                         {
                             context.Token = accessToken;
                         }
@@ -156,7 +156,7 @@ namespace PickMeApp.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<NotificationsHub>("/notifications", options => options.Transports = HttpTransportType.WebSockets);
-                endpoints.MapHub<ChatHub>("/chat", options => options.Transports = HttpTransportType.WebSockets);
+                endpoints.MapHub<ChatHub>("/chats", options => options.Transports = HttpTransportType.WebSockets);
                 endpoints.MapControllers();
             });
 

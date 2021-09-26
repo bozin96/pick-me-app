@@ -29,6 +29,9 @@ const getUserRidesAsPassenger = (userId:string, params:any = null):Observable<My
 const getUser = (userId:string):Observable<User> => defer(() => httpClient.get(`/users/${userId}`)).pipe(map((res:AxiosResponse) => res.data as User));
 
 const updateUser = (userId:string, data:Partial<User>):Observable<User> => defer(() => httpClient.put(`/users/${userId}`, data)).pipe(map((res:AxiosResponse) => res.data as User));
+
+const getChats = ():Observable<any> => defer(() => httpClient.get('/chats')).pipe(map((res:any) => res.data));
+const getChatMessages = (chatId:string):Observable<any> => defer(() => httpClient.get(`/chats/${chatId}/messages`)).pipe(map((res:any) => res.data));
 export default {
     login,
     getRides,
@@ -41,4 +44,6 @@ export default {
     getUserRidesAsPassenger,
     getUser,
     updateUser,
+    getChats,
+    getChatMessages,
 };

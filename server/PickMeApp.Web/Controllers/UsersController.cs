@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
+using ImageMagick;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using PickMeApp.Application.Extensions;
 using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
-using PickMeApp.Application.Models.ChatDtos;
 using PickMeApp.Application.Models.NotificationDtos;
 using PickMeApp.Application.Models.PassengerOnRideDtos;
 using PickMeApp.Application.Models.RideDtos;
 using PickMeApp.Application.Models.UserDtos;
 using PickMeApp.Core.Constants;
 using PickMeApp.Core.Models;
-using PickMeApp.Web.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,23 +67,29 @@ namespace PickMeApp.Web.Controllers
         }
 
         [HttpPut("{userId}", Name = "UpdateUserInfo")]
-        public async Task<ActionResult> UpdateUserInfoAsync(
+        public async Task<IActionResult> UpdateUserInfoAsync(
             string userId,
-            [FromForm] UpdateUserDto user)
+            [FromBody] UpdateUserDto user)
         {
             var userFromRepo = await _userManager.FindByIdAsync(userId);
+            if (userFromRepo == null)
+                return ReturnError(StatusCodes.Status404NotFound, "User not found");
 
             _mapper.Map(user, userFromRepo);
-
+            // create avatar picture for user
+            if (userFromRepo.UserPhoto != null)
+            {
+                using (MagickImage image = new MagickImage(userFromRepo.UserPhoto))
+                {
+                    image.Format = image.Format; // Get or Set the format of the image.
+                    image.Resize(40, 40); // fit the image into the requested width and height. 
+                    image.Quality = 10; // This is the Compression level.
+                    userFromRepo.UserAvatarPhoto = image.ToByteArray();
+                }
+            }
             IdentityResult result = await _userManager.UpdateAsync(userFromRepo);
             if (!result.Succeeded)
-            {
-                return BadRequest(new
-                {
-                    success = false,
-                    errors = result.Errors.Select(e => e.Description)
-                });
-            }
+                return ReturnErrors(StatusCodes.Status409Conflict, result.Errors.Select(e => e.Description).ToList());
 
             return NoContent();
         }

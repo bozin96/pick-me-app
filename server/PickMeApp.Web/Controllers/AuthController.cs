@@ -2,20 +2,15 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PickMeApp.Application.Models;
 using PickMeApp.Core.Models;
 using PickMeApp.Data.Interfaces;
 using PickMeApp.Web.Models;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Web.Controllers

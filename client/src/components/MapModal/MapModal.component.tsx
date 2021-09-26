@@ -27,13 +27,9 @@ const MapModal: React.FC<MapModalProps> = (props: MapModalProps) => {
         if (open) initMap();
     }, [open]);
     useEffect(() => {
-        const handleUpdate = (res: any): void => {
-            console.log(res);
-        };
         const refreshMap = (): void => {
             Microsoft.Maps.loadModule('Microsoft.Maps.Directions', (): void => {
                 const directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
-                Microsoft.Maps.Events.addHandler(directionsManager, 'directionsUpdated', handleUpdate);
 
                 directionsManager.clearDisplay();
                 directionsManager.clearAll();

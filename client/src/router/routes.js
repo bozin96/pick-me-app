@@ -1,3 +1,4 @@
+import ChatPage from '../pages/ChatPage';
 import Dashboard from '../pages/Dashboard';
 import Home from '../pages/Home';
 import Notifications from '../pages/Notifications';
@@ -49,6 +50,13 @@ export default [
     component: UserProfile,
     authorized: true,
     exact: true,
+
+  },
+  {
+    path: '/chats',
+    component: ChatPage,
+    exact: false,
+    authorized: true,
 
   },
   {

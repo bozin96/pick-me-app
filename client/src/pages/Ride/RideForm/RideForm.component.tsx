@@ -172,7 +172,6 @@ const RideForm: React.FC<any> = () => {
                 };
             }),
         };
-        console.log(submitObject);
         setFormSubmitting(true);
         ApiService.createRide(submitObject).subscribe({
             next(x) {

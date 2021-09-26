@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using PickMeApp.Application.Extensions;
@@ -20,7 +19,6 @@ using PickMeApp.Web.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Web.Controllers
@@ -50,15 +48,15 @@ namespace PickMeApp.Web.Controllers
             IPropertyCheckerService propertyCheckerService,
             IHubContext<NotificationsHub> hubContext)
         {
-            _rideRepository = rideRepository;
-            _passengerOnRideRepository = passengerOnRideRepository;
-            _notificationRepository = notificationRepository;
-            _rideService = rideService;
-            _userManager = userManager;
+            _rideRepository = rideRepository ?? throw new ArgumentNullException(nameof(rideRepository));
+            _passengerOnRideRepository = passengerOnRideRepository ?? throw new ArgumentNullException(nameof(passengerOnRideRepository));
+            _notificationRepository = notificationRepository ?? throw new ArgumentNullException(nameof(notificationRepository));
+            _rideService = rideService ?? throw new ArgumentNullException(nameof(rideService));
+            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
             _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
-            _hubContext = hubContext;
+            _hubContext = hubContext ?? throw new ArgumentNullException(nameof(hubContext));
         }
 
         #region CRUD operations

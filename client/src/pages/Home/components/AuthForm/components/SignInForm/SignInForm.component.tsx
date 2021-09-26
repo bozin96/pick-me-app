@@ -42,7 +42,6 @@ const SignInForm: React.FC = () => {
                 } else {
                     errorMessage = 'Error occured';
                 }
-                console.log(errorMessage);
 
                 setFormError(errorMessage);
                 setIsSubmitting(false);

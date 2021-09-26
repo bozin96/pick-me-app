@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace PickMeApp.Application.Models.UserDtos
 {
     public class UpdateUserDto
@@ -15,6 +11,6 @@ namespace PickMeApp.Application.Models.UserDtos
 
         public string Email { get; set; }
 
-        public IFormFile UserImage { get; set; }
+        public string UserPhoto { get; set; }
     }
 }

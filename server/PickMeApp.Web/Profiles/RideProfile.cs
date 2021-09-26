@@ -2,10 +2,6 @@
 using PickMeApp.Application.Models.RideDtos;
 using PickMeApp.Core.Models;
 using PickMeApp.Core.Models.Notification;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PickMeApp.Web.Profiles
 {

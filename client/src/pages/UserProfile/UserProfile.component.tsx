@@ -104,7 +104,6 @@ const UserProfile: React.FC = () => {
             setFormSubmitting(true);
             ApiService.updateUser(id, submitObject).subscribe({
                 next(x) {
-                    console.log(x);
                     userInfoSubject.next(formState);
                     setEditMode(false);
                     setFormSubmitting(false);
