@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-no-undef */
 import React, { useCallback, useEffect, useState } from 'react';
@@ -6,14 +8,15 @@ import { List } from 'semantic-ui-react';
 import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../../common/observers';
 import Ride from '../../../components/Ride';
 import ApiService from '../../../services/Api.service';
-import { MyRideInterface } from '../../../types';
+import { MyDriveInterface } from '../../../types';
+import Chat from '../../ChatPage/components/Chat/Chat.component';
 import RideSearchForm from './components/RideSearchForm';
 import './RideSearch.styles.scss';
 
 const RideSearch: React.FC = () => {
   const [ridesList, setRidesList] = useState<any>([]);
   const [searchRideInfo, setSearchRideInfo] = useState({});
-
+const [chatInfo, setChatInfo] = useState<any>({});
   useEffect(() => {
     RidesSearchResultsSubject.subscribe((res) => setRidesList(res));
   }, []);
@@ -28,6 +31,10 @@ const RideSearch: React.FC = () => {
 
   const baseClass = 'pm-ride-search';
 
+  const handleChatClick = (userId:string):void => {
+    ApiService.getOrCreateChat(userId).subscribe((res:any) => setChatInfo({ ...res, receiverId: userId }));
+  };
+
   return (
     <div className={baseClass}>
       <h2>Search Results</h2>
@@ -35,11 +42,12 @@ const RideSearch: React.FC = () => {
 
         <RideSearchForm />
         <List divided className="pm-rides-list">
-          {ridesList.map((ride: MyRideInterface) => (
-            <Ride ride={ride} onApply={handleRideApply} />
+          {ridesList.map((ride: MyDriveInterface) => (
+            <Ride ride={ride} onApply={handleRideApply} onChatClick={handleChatClick} />
           ))}
 
         </List>
+        {chatInfo.chatId && <Chat chatId={chatInfo.chatId} receiverId={chatInfo.receiverId} />}
       </div>
     </div>
   );

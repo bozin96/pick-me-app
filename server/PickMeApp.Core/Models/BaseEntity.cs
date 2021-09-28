@@ -8,6 +8,6 @@ namespace PickMeApp.Core.Models
         [Key]
         public Guid Id { get; set; }
 
-        public DateTime? CreationDate { get; }
+        public DateTime? CreationDate { get; } = DateTime.UtcNow;
     }
 }

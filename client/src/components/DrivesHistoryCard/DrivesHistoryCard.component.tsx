@@ -7,17 +7,17 @@ import {
 } from 'semantic-ui-react';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
-import { MyRideInterface } from '../../types';
-import MyRide from '../MyRide';
+import { MyDriveInterface } from '../../types';
+import MyDrive from '../MyDrive';
 
 const DrivingHistoryCard: React.FC = () => {
-  const [rides, setRides] = useState<MyRideInterface[]>([]);
+  const [rides, setRides] = useState<MyDriveInterface[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
     setIsFetching(true);
     const userId = CredentialsService.getUserId();
-    ApiService.getRides(userId)
+    ApiService.getUserRidesAsDriver(userId, {})
       // .pipe(map((res) => res.slice(0, 5)))
       .subscribe({
         next(x) {
@@ -35,7 +35,7 @@ const DrivingHistoryCard: React.FC = () => {
   return (
     <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
       {rides.map((el) => (
-        <MyRide {...el} />
+        <MyDrive {...el} />
       ))}
       <Dimmer active={isFetching}>
         <Header as="h2" icon inverted>

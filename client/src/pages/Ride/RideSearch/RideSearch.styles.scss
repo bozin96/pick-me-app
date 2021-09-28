@@ -9,8 +9,15 @@
     flex: 1;
     &__content {
         display: flex;
-
         width: 100%;
+
+        .pm-single-chat {
+            position: absolute;
+            right: 0;
+            &__container {
+                width: 300px;
+            }
+        }
     }
     .pm-horizonal-list-item {
         display: flex !important;

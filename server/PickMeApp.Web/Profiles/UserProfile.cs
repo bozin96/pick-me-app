@@ -26,9 +26,9 @@ namespace PickMeApp.Web.Profiles
                 .ForMember(
                     dest => dest.Type,
                     opt => opt.MapFrom(src => src.Type.ToString()))
-                .ForMember(
-                    dest => dest.UserFromImage,
-                    opt => opt.MapFrom(src => src.UserFrom != null ? Convert.ToBase64String(src.UserFrom.UserPhoto) : ""))
+                //.ForMember(
+                //    dest => dest.UserFromImage,
+                //    opt => opt.MapFrom(src => src.UserFrom != null ? Convert.ToBase64String(src.UserFrom.UserPhoto) : ""))
                 .ForMember(
                     dest => dest.UserFromName,
                     opt => opt.MapFrom(src => src.UserFrom != null ? $"{src.UserFrom.FirstName} {src.UserFrom.LastName}" : ""));

@@ -44,14 +44,14 @@ const UserProfile: React.FC = () => {
                         middleName,
                         userPhoto,
                         email,
-                        averateRate,
+                        averageRate,
                     } = res;
                     const data = {
                         firstName,
                         lastName,
                         middleName,
                         email,
-                        averateRate,
+                        averageRate,
                         userPhoto: userPhoto
                             ? `data:image/png;base64,${userPhoto}`
                             : 'https://react.semantic-ui.com/images/wireframe/image.png',

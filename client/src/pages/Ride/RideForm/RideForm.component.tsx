@@ -156,7 +156,7 @@ const RideForm: React.FC<any> = () => {
             }),
             routeLegs: routeLegs.map((leg: any, index: number) => {
                 const {
-                    endWaypointLocation: { latitude: endLatitude, longitude: endLongitude }, summary: { distance }, startWaypointLocation: {
+                    endWaypointLocation: { latitude: endLatitude, longitude: endLongitude }, summary: { distance, time }, startWaypointLocation: {
                         latitude: startLatitude, longitude: startLongitude,
                     },
                 } = leg;
@@ -166,8 +166,8 @@ const RideForm: React.FC<any> = () => {
                     endLatitude,
                     endLongitude,
                     distance,
+                    time,
                     price: Number(options[index].price),
-                    time: Number(options[index].time),
 
                 };
             }),
@@ -218,7 +218,6 @@ const RideForm: React.FC<any> = () => {
                 <div className={`${baseClass}__options`}>
                     {options.map((opt: any, index: number) => (
                         <div className={`${baseClass}__options__item`}>
-                            <Form.Input placeholder="Time" icon="time" iconPosition="left" name="time" onChange={(e: any) => handleOptionsChange(e, index)} />
                             <Form.Input placeholder="Price" name="price" icon="dollar sign" iconPosition="left" onChange={(e: any) => handleOptionsChange(e, index)} />
 
                         </div>

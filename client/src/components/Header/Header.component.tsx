@@ -85,6 +85,13 @@ const Header: React.FC = () => {
                         </Menu.Item>
                         <Menu.Item>
                             <NavLink
+                                to="/chats"
+                            >
+                                <Icon name="chat" />
+                            </NavLink>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <NavLink
                                 to={`/user-profile/${CredentialsService.getUserId()}`}
                             >
                                 {userName}

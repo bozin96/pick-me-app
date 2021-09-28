@@ -2,7 +2,11 @@
 using Microsoft.AspNetCore.SignalR;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Models.ChatDtos;
+using PickMeApp.Core.Models.Message;
+using PickMeApp.Web.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PickMeApp.Web.Hubs
@@ -10,8 +14,8 @@ namespace PickMeApp.Web.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
+        private static List<UserChatViewModel> _ActiveUsers = new List<UserChatViewModel>();
         private readonly IChatRepository _chatRepository;
-        //private readonly static Dictionary<string, string> _ConnectionsMap = new Dictionary<string, string>();
 
         public ChatHub(IChatRepository chatRepository)
         {
@@ -21,84 +25,98 @@ namespace PickMeApp.Web.Hubs
         public async Task SendMessage(MessageDto request)
         {
             string userId = IdentityName;
-            var messageFromRepo = await _chatRepository.CreateMessageAsync(request.ChatId, request.Text, userId);
+            Guid currentChatId = _ActiveUsers
+                    .Where(u => u.Id == request.ReceiverId)
+                    .Select(u => u.CurrentChat)
+                    .FirstOrDefault();
+
+            // If the chat is not open to the receiving user the message.
+            bool isChatActive = currentChatId == request.ChatId;
+            Message messageFromRepo = await _chatRepository.CreateMessageAsync(request.ChatId, request.Text, userId, isChatActive);
             if (messageFromRepo == null)
             {
-                // await Clients.OthersInGroup(request.ChatId.ToString())
+                await Clients.Caller.SendAsync("onError", "SendMessage: Chat with given id does not exist.");
+            }
+
+            if (!isChatActive)
+            {
                 await Clients.Users(request.ReceiverId)
-                    .SendAsync("ErrorMessage", new
+                    .SendAsync("ReceiveOtherChatMessage", new
                     {
-                        Text = "Chat with given id does not exist",
+                        ChatId = request.ChatId
+                    });
+            }
+            else
+            {
+                await Clients.Users(request.ReceiverId)
+                    .SendAsync("ReceiveMessage", new
+                    {
+                        Text = messageFromRepo.Text,
                         SenderId = userId,
                         Timestamp = messageFromRepo.Timestamp.ToString("dd/MM/yyyy hh:mm:ss")
                     });
             }
+        }
 
-            // await Clients.OthersInGroup(request.ChatId.ToString())
-            await Clients.Users(request.ReceiverId)
-                .SendAsync("ReceiveMessage", new
+        public async Task OpenChat(OpenChatDto request)
+        {
+            try
+            {
+                var userViewModel = _ActiveUsers.FirstOrDefault(u => u.Id == IdentityName);
+                if (userViewModel == null)
                 {
-                    Text = messageFromRepo.Text,
-                    SenderId = userId,
-                    Timestamp = messageFromRepo.Timestamp.ToString("dd/MM/yyyy hh:mm:ss")
-                });
-        }
+                    userViewModel = new UserChatViewModel(IdentityName, request.ChatId);
+                    _ActiveUsers.Add(userViewModel);
+                }
+                else
+                {
+                    _ActiveUsers.Remove(userViewModel);
+                    _ActiveUsers.Add(new UserChatViewModel(IdentityName, request.ChatId));
+                }
 
-        public Task JoinRoom(string roomId)
-        {
-            return Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-        }
-
-        public Task LeaveRoom(string roomId)
-        {
-            return Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+                if (request.HasUnreadedMessages)
+                {
+                    await _chatRepository.CleanUnreadedMessagesCounterAsync(request.ChatId, IdentityName);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Clients.Caller.SendAsync("onError", "OpenChat:" + ex.Message);
+            }
+            return;
         }
 
         public override Task OnConnectedAsync()
         {
-            //try
-            //{
-            //    var user = _context.Users.Where(u => u.UserName == IdentityName).FirstOrDefault();
-            //    var userViewModel = _mapper.Map<ApplicationUser, UserViewModel>(user);
-            //    userViewModel.Device = GetDevice();
-            //    userViewModel.CurrentRoom = "";
-
-            //    if (!_Connections.Any(u => u.Username == IdentityName))
-            //    {
-            //        _Connections.Add(userViewModel);
-            //        _ConnectionsMap.Add(IdentityName, Context.ConnectionId);
-            //    }
-
-            //    Clients.Caller.SendAsync("getProfileInfo", user.FullName, user.Avatar);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Clients.Caller.SendAsync("onError", "OnConnected:" + ex.Message);
-            //}
+            try
+            {
+                if (!_ActiveUsers.Any(u => u.Id == IdentityName))
+                {
+                    var userViewModel = new UserChatViewModel(IdentityName);
+                    _ActiveUsers.Add(userViewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("onError", "OnConnected:" + ex.Message);
+            }
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            //try
-            //{
-            //    var user = _Connections.Where(u => u.Username == IdentityName).First();
-            //    _Connections.Remove(user);
-
-            //    // Tell other users to remove you from their list
-            //    Clients.OthersInGroup(user.CurrentRoom).SendAsync("removeUser", user);
-
-            //    // Remove mapping
-            //    _ConnectionsMap.Remove(user.Username);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Clients.Caller.SendAsync("onError", "OnDisconnected: " + ex.Message);
-            //}
+            try
+            {
+                var user = _ActiveUsers.Where(u => u.Id == IdentityName).First();
+                _ActiveUsers.Remove(user);
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("onError", "OnDisconnected: " + ex.Message);
+            }
 
             return base.OnDisconnectedAsync(exception);
         }
-
 
         private string IdentityName
         {

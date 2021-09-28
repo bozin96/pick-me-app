@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => (
     <Grid divided columns="2" className="pm-dashboard">
         <Grid.Row>
             <Grid.Column>
-                <h2>My Recent Drivers</h2>
+                <h2>My Recent Drives</h2>
                 <DrivesHistoryCard />
             </Grid.Column>
             <Grid.Column>

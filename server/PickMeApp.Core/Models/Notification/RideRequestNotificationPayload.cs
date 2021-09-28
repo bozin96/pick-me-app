@@ -22,15 +22,11 @@ namespace PickMeApp.Core.Models.Notification
 
         public string PassengerId { get; set; }
 
-        public string UserImage { get; set; }
-
         public string UserFullName { get; set; }
 
         public void AddUserInfo(ApplicationUser user)
         {
             PassengerId = user.Id;
-            if (user.UserPhoto != null)
-                UserImage = Convert.ToBase64String(user.UserPhoto);
             UserFullName = $"{user.FirstName} {user.LastName}";
         }
     }

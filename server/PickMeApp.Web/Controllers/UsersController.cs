@@ -139,7 +139,7 @@ namespace PickMeApp.Web.Controllers
             };
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            var shapedRides = _mapper.Map<IEnumerable<RideDto>>(ridesFromRepo).ShapeData(resourceParameters.Fields);
+            var shapedRides = _mapper.Map<IEnumerable<RideDto>>(ridesFromRepo);
 
             return Ok(shapedRides);
         }
@@ -188,7 +188,7 @@ namespace PickMeApp.Web.Controllers
             };
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            var shapedRides = _mapper.Map<IEnumerable<PassengerOnRideDto>>(passengerOnRidesFromRepo).ShapeData(resourceParameters.Fields);
+            var shapedRides = _mapper.Map<IEnumerable<PassengerOnRideDto>>(passengerOnRidesFromRepo);
 
             return Ok(shapedRides);
         }
@@ -218,7 +218,8 @@ namespace PickMeApp.Web.Controllers
             };
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            var shapedNotifications = _mapper.Map<IEnumerable<NotificationDto>>(notificationsFromRepo).ShapeData(resourceParameters.Fields);
+            var shapedNotifications = _mapper.Map<IEnumerable<NotificationDto>>(notificationsFromRepo);
+             //   .ShapeData(resourceParameters.Fields);
 
             return Ok(shapedNotifications);
         }

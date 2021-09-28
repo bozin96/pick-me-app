@@ -24,5 +24,7 @@ namespace PickMeApp.Core.Models.Message
 
         public List<Message> Messages { get; set; }
         public DateTime LastMessageTimeStamp { get; set; }
+        public string LastMessageSenderId { get; set; }
+        public int NumberOfUnreadedMessages { get; set; }
     }
 }

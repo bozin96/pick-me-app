@@ -34,6 +34,22 @@ namespace PickMeApp.Application.Repositories
                 resourceParameters.PageSize);
         }
 
+        public async Task<Chat> GetChatByUsersAsync(string userId1, string userId2)
+        {
+            if (string.IsNullOrEmpty(userId1))
+            {
+                throw new ArgumentNullException(nameof(userId1));
+            }
+            if (string.IsNullOrEmpty(userId2))
+            {
+                throw new ArgumentNullException(nameof(userId2));
+            }
+
+            return await _dbContext.Chats.FirstOrDefaultAsync(e =>
+                (e.FirstUserId == userId1 && e.SecondUserId == userId2) ||
+                (e.FirstUserId == userId2 && e.SecondUserId == userId1));
+        }
+
         public async Task<PagedList<Message>> GetChatMessagesAsync(Guid chatId, ResourceParameters resourceParameters)
         {
             var collection = _dbContext.Messages
@@ -60,7 +76,7 @@ namespace PickMeApp.Application.Repositories
             return chat;
         }
 
-        public async Task<Message> CreateMessageAsync(Guid chatId, string text, string senderId)
+        public async Task<Message> CreateMessageAsync(Guid chatId, string text, string senderId, bool isChatActive)
         {
             Message message = new Message()
             {
@@ -74,10 +90,14 @@ namespace PickMeApp.Application.Repositories
             if (chat == null)
                 return null;
 
-            chat.Messages = new List<Message>();
-
-            chat.Messages.Add(message);
+            chat.Messages = new List<Message>
+            {
+                message
+            };
             chat.LastMessageTimeStamp = message.Timestamp;
+            chat.LastMessageSenderId = senderId;
+            if (!isChatActive)
+                chat.NumberOfUnreadedMessages++;
             _dbContext.Chats.Update(chat);
 
             try
@@ -105,6 +125,20 @@ namespace PickMeApp.Application.Repositories
             return await _dbContext.Chats.AnyAsync(e =>
                 (e.FirstUserId == userId1 && e.SecondUserId == userId2) ||
                 (e.FirstUserId == userId2 && e.SecondUserId == userId1));
+        }
+
+        public async Task CleanUnreadedMessagesCounterAsync(Guid chatId, string userId)
+        {
+            var chat = await _dbContext.Chats.FirstOrDefaultAsync(c => c.Id == chatId);
+            if (chat == null)
+                return;
+            // If same user opens chat do nothing.
+            if (chat.LastMessageSenderId == userId)
+                return;
+
+            chat.NumberOfUnreadedMessages = 0;
+            _dbContext.Chats.Update(chat);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

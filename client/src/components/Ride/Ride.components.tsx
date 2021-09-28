@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable no-lone-blocks */
@@ -8,23 +9,27 @@ import {
     Button,
     Card, CardContent, Icon, Label, List, Rating,
 } from 'semantic-ui-react';
-import { MyRideInterface } from '../../types';
+import { MyDriveInterface } from '../../types';
 import MapModal from '../MapModal';
 import './Ride.styles.scss';
 
 interface RideProps {
     onApply: (rideId: string) => void,
-    ride: MyRideInterface
+    onChatClick: (userId: string) => void,
+    ride: MyDriveInterface
 }
 
 const Ride: React.FC<RideProps> = (props: RideProps) => {
     const {
         ride: {
-
-             waypoints = [], routeLegs = [],
-             startDate, id: rideId = '', numberOfPassengers,
-             driverName,
+            waypoints = [], routeLegs = [],
+            startDate, id: rideId = '', numberOfPassengers,
+            driverName,
+            driverRate,
+            driverId,
+            routeIndex,
         },
+        onChatClick,
         onApply,
     } = props;
 
@@ -45,7 +50,7 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
                     <span>
                         {startDate}
                     </span>
-                    <Rating icon="star" size="large" defaultRating={3} maxRating={5} />
+                    <Rating icon="star" size="large" defaultRating={driverRate} maxRating={5} disabled />
                 </Card.Header>
                 <Card.Meta>
                     <List>
@@ -77,7 +82,7 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
                             </List.Content>
                         </List.Item>
                     </List>
-                    <MapModal waypoints={waypoints} routeLegs={routeLegs} index={0} />
+                    <MapModal waypoints={waypoints} routeLegs={routeLegs} routeIndex={routeIndex} />
 
                 </Card.Meta>
                 <Card.Description>
@@ -95,7 +100,7 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
                     </Label>
                 </Card.Description>
                 <Card.Description>
-                    <Button color="orange" inverted icon="chat">Chat</Button>
+                    <Button color="orange" inverted onClick={() => onChatClick(driverId)} icon="chat">Chat</Button>
                     <Button positive onClick={handleRideApply}>Apply</Button>
                 </Card.Description>
             </CardContent>

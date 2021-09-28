@@ -10,6 +10,7 @@ import routes from './router/routes';
 
 const App: React.FC = () => {
   const baseClass = 'pm-app';
+
   return (
     <div className={baseClass}>
       <Router history={history}>

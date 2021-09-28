@@ -31,10 +31,10 @@ const Notifications: React.FC = () => {
         <div className={baseClass}>
             <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
                 {notifications.map((req: any) => {
-                    if (req.Type === 'RequestForRide') {
+                    if (req.type === 'RequestForRide') {
                        return <RideRequest {...req} />;
                     }
-                    if (req.Type === 'ResponseForRide') {
+                    if (req.type === 'ResponseForRide') {
                         return <RideResponse {...req} />;
                     }
                     return undefined;

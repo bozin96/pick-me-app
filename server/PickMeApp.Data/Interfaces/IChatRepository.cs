@@ -9,12 +9,16 @@ namespace PickMeApp.Application.Interfaces
     {
         Task<PagedList<Chat>> GetChatsAsync(string userId, ResourceParameters resourceParameters);
 
+        Task<Chat> GetChatByUsersAsync(string userId1, string userId2);
+
         Task<PagedList<Message>> GetChatMessagesAsync(Guid chatId, ResourceParameters resourceParameters);
 
         Task<Chat> CreateChat(string userId1, string userId2);
 
-        Task<Message> CreateMessageAsync(Guid chatId, string text, string senderId);
+        Task<Message> CreateMessageAsync(Guid chatId, string text, string senderId, bool isChatActive);
 
         Task<bool> ChatExistsAsync(string userId1, string userId2);
+
+        Task CleanUnreadedMessagesCounterAsync(Guid chatId, string userId);
     }
 }

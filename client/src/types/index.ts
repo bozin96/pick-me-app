@@ -14,15 +14,17 @@ export interface Waypoint {
     latitude: number
 }
 
-export type MyRideInterface = {
+export interface MyDriveInterface {
     id: string;
     startDate: string,
     routeLegs: RouteLegInterface[];
     waypoints: Waypoint[];
     numberOfPassengers: number;
     petFriendly: boolean;
-    driverName: string
-
+    driverName: string,
+    driverId:string,
+    driverRate: number,
+    routeIndex: number
 }
 
 export interface UserLoginInteface {
@@ -67,15 +69,47 @@ export interface User {
     middleName: null,
     numberOfRates: number
     userPhoto: string | null
-    averateRate:number
 }
 
 export interface ChatMessageSend {
-    chatId:string;
-    text:string;
+    chatId: string;
+    text: string;
 }
 export interface ChatMessageReceive {
-    text:string;
-    senderId:string;
-    timestamp:string
+    text: string;
+    sendUserId: string;
+    timestamp: string
+}
+
+export interface MyRideInterface {
+    driverName: string,
+    endWaypoint: string,
+    id: string,
+    passengerId: string,
+    review: number
+    rideId: string
+    startDate: string,
+    startWaypoint: string
+}
+
+export interface ChatInteface {
+    chatId: string,
+    firstUserId: string,
+    firstUserName: string,
+    firstUserPhoto: string,
+    secondUserId: string,
+    secondUserName: string,
+    secondUserPhoto: string,
+    numberOfUnreadedMessages:number
+}
+
+export interface ChatMessageInteface {
+    chat: string
+    chatId: string,
+    creationDate: string,
+    id: string,
+    sendUser: string,
+    sendUserId: string,
+    text: string,
+    timestamp: string,
 }

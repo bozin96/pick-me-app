@@ -309,7 +309,7 @@ namespace PickMeApp.Web.Controllers
                 Body = NotificationConfiguration.RequestForRideBody(
                     rideRequest.StartWaypoint,
                     rideRequest.EndWaypoint,
-                    rideRequest.StartDate,
+                    rideFromRepo.StartDate,
                     rideRequest.NumberOfPassengers),
                 UserFromId = user.Id,
                 UserToId = rideFromRepo.DriverId,
@@ -378,13 +378,24 @@ namespace PickMeApp.Web.Controllers
                     return ReturnErrors(status.ErrorCode, status.Errors);
 
                 await _rideRepository.UpdateAsync(rideAccepted);
+                await _passengerOnRideRepository.AddAsync(new PassengerOnRide()
+                {
+                    DriverName = $"{user.FirstName} {user.LastName}",
+                    PassengerId = notificationFromRepo.UserFromId,
+                    Review = 0,
+                    RideId = rideFromRepo.Id,
+                    StartDate = rideFromRepo.StartDate,
+                    StartWaypoint = notificationPayload.StartWaypoint,
+                    EndWaypoint = notificationPayload.EndWaypoint
+                });
+
             }
 
             // Create notification for driver.
             Notification acceptNotification = new Notification()
             {
                 RideId = rideId,
-                Type = NotificationType.RequestForRide,
+                Type = NotificationType.ResponseOnRideRequest,
                 Header = NotificationConfiguration.ResponseOnRideRequestHeader,
                 Body = NotificationConfiguration.ResponseOnRideRequestBody(
                     $"{driver.FirstName} {driver.LastName}",
@@ -393,7 +404,7 @@ namespace PickMeApp.Web.Controllers
                     notificationPayload.StartDate,
                    request.Accepted),
                 UserFromId = user.Id,
-                UserToId = rideFromRepo.DriverId
+                UserToId = notificationFromRepo.UserFromId
             };
 
             // Store response notification in db.
@@ -442,6 +453,8 @@ namespace PickMeApp.Web.Controllers
                 return ReturnError(StatusCodes.Status404NotFound, "Wrong ride id.");
             if (passengerOnRideFromRepo.PassengerId != userId)
                 return ReturnError(StatusCodes.Status403Forbidden, "You have no permission to review this ride.");
+            if(passengerOnRideFromRepo.Review.HasValue && passengerOnRideFromRepo.Review.Value !=0)
+                return ReturnError(StatusCodes.Status409Conflict, "You have already rated this ride.");
 
             var result = await _passengerOnRideRepository.AddReviewAsync(rideReview.Id, rideReview.Rate);
             if (!result)
@@ -459,7 +472,7 @@ namespace PickMeApp.Web.Controllers
             Notification notification = new Notification()
             {
                 RideId = rideId,
-                Type = NotificationType.RequestForRide,
+                Type = NotificationType.RideReview,
                 Header = NotificationConfiguration.RideReviewHeader,
                 Body = NotificationConfiguration.RideReviewBody(
                         passengerOnRideFromRepo.StartWaypoint,

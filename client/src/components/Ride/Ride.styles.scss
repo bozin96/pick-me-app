@@ -2,6 +2,12 @@
     width: auto !important;
     .header {
         border-bottom: 1px solid gray;
+        display: flex !important;
+        flex-direction: column;
+        .ui.star {
+            width: 140px;
+            margin: 8px 0;
+        }
     }
     .meta {
         flex: 1;

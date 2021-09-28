@@ -55,22 +55,22 @@ namespace PickMeApp.Core.Models.Notification
             DateTime startDate,
             int review)
         {
-            return $"You have been reviewed  for ride {startWaypoint}-{EndWaypoint} " +
+            return $"You have been reviewed for ride {startWaypoint}-{EndWaypoint} " +
                 $"on {startDate} with review {review}";
         }
 
         public static string ResponseOnRideRequestBody(
             string driverFullName,
             string startWaypoint,
-            string EndWaypoint,
+            string endWaypoint,
             DateTime startDate,
             bool accept)
         {
             if (accept)
-                return $"Your request form ride {startWaypoint}-{EndWaypoint} " +
+                return $"Your request for ride {startWaypoint}-{endWaypoint} " +
                     $"on {startDate} has bee accepted by {driverFullName}";
 
-            return $"Your request form ride {startWaypoint}-{EndWaypoint} " +
+            return $"Your request for ride {startWaypoint}-{endWaypoint} " +
                     $"on {startDate} has bee declined by {driverFullName}";
         }
 

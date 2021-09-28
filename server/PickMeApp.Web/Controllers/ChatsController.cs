@@ -49,12 +49,18 @@ namespace PickMeApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateChatAsync(ChatForCreationDto request)
         {
-            var currentUserId = GetUserId();
-            if (await _chatRepository.ChatExistsAsync(request.UserId, currentUserId))
-                return ReturnError(StatusCodes.Status409Conflict, "Chat already exist for these two users");
+            if (!ModelState.IsValid)
+            {
+                return ResponseModelStateErrors();
+            }
 
-            var chat = await _chatRepository.CreateChat(currentUserId, request.UserId);
-            return Ok(chat);
+            var currentUserId = GetUserId();
+            var chat = await _chatRepository.GetChatByUsersAsync(currentUserId, request.UserId);
+            if (chat == null)
+                chat = await _chatRepository.CreateChat(currentUserId, request.UserId);
+
+
+            return Ok(_mapper.Map<ChatDto>(chat));
         }
 
         [HttpGet("{chatId}/messages")]

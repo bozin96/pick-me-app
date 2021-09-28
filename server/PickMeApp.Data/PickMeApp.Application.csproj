@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20210919201148_Update-RideTable.Designer.cs" />
     <Compile Remove="Migrations\20210920235302_Add-NotificationAndChatTables.cs" />
     <Compile Remove="Migrations\20210920235302_Add-NotificationAndChatTables.Designer.cs" />
+    <Compile Remove="Migrations\20210927214820_Update-Chat.cs" />
+    <Compile Remove="Migrations\20210927214820_Update-Chat.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

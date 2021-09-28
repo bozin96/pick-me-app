@@ -102,7 +102,7 @@ namespace PickMeApp.Web
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
-                hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
+                //hubOptions.KeepAliveInterval = TimeSpan.FromMinutes(1);
             }).AddJsonProtocol(options =>
             {
                 options.PayloadSerializerOptions.PropertyNameCaseInsensitive = true;

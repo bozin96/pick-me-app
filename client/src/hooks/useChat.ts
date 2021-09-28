@@ -5,8 +5,9 @@ import {
     HttpTransportType, HubConnectionBuilder, LogLevel,
 } from '@microsoft/signalr';
 import { useEffect, useState } from 'react';
+/* eslint-disable max-len */
 import { defer, Observable } from 'rxjs';
-import { newChatMessageSubject } from '../common/observers';
+import { newChatMessageSubject, newUnreadedMessage } from '../common/observers';
 import CredentialsService from '../services/Credentials.service';
 import { ChatMessageSend } from '../types';
 
@@ -15,13 +16,14 @@ export default (): any => {
 
     useEffect(() => {
         const establishConnection = async (): Promise<any> => {
+            console.log('KONNEKCIJA');
             const newConnection = new HubConnectionBuilder()
                 .withUrl('http://localhost:51052/chats', {
                     skipNegotiation: true,
                     transport: HttpTransportType.WebSockets,
                     accessTokenFactory: () => CredentialsService.getToken(),
                 })
-                .configureLogging(LogLevel.Information)
+                .configureLogging(LogLevel.None)
                 .withAutomaticReconnect()
                 .build();
 
@@ -39,6 +41,11 @@ export default (): any => {
                     connection.on('ReceiveMessage', (message: any): void => {
                         newChatMessageSubject.next(message);
                     });
+                    connection.on('ReceiveOtherChatMessage', (chatId: string) => {
+                        console.log('ReceiveOtherChatMessage', chatId);
+
+                        newUnreadedMessage.next(chatId);
+                    });
                 })
                 .catch((e: any) => console.log('Connection failed: ', e));
         }
@@ -51,7 +58,17 @@ export default (): any => {
         alert('No connection to server yet.');
         return null;
     };
+    const chatInitialize = (chatId: string, HasUnreadedMessages: boolean): Observable<any> | null => {
+        if (connection.connectionStarted) {
+            return defer(() => connection.send('OpenChat', { chatId, HasUnreadedMessages }));
+        }
+
+        alert('No connection to server yet.');
+        return null;
+    };
+
     return {
         sendMessage,
+        chatInitialize,
     };
 };

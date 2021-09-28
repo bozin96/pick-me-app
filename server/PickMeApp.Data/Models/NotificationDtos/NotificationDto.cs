@@ -19,6 +19,6 @@ namespace PickMeApp.Application.Models.NotificationDtos
 
         public string UserFromName { get; set; }
 
-        public string UserFromImage { get; set; }
+        public bool IsVisible { get; set; }
     }
 }

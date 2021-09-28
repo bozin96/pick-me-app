@@ -37,6 +37,10 @@ namespace PickMeApp.Application.Repositories
                     e.StartDate.Month == resourceParameters.DateTime.Month &&
                     e.StartDate.Year == resourceParameters.DateTime.Year);
             }
+            else
+            {
+                collection = collection.Where(e => e.StartDate > DateTime.UtcNow);
+            }
 
             if (resourceParameters.StartLongitude != 0 &&
                 resourceParameters.StartLatitude != 0 &&

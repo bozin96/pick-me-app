@@ -17,5 +17,9 @@ namespace PickMeApp.Application.Models.ChatDtos
         public string SecondUserName { get; set; }
 
         public string SecondUserPhoto { get; set; }
+
+        public string LastMessageSenderId { get; set; }
+
+        public int NumberOfUnreadedMessages { get; set; }
     }
 }

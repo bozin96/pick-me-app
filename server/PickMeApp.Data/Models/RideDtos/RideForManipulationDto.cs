@@ -15,5 +15,7 @@ namespace PickMeApp.Application.Models.RideDtos
         public int NumberOfPassengers { get; set; }
 
         public bool PetFriendly { get; set; }
+
+        public int RouteIndex { get; set; }
     }
 }

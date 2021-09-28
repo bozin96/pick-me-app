@@ -10,10 +10,10 @@ import { RouteLegInterface, Waypoint } from '../../types';
 type MapModalProps = {
     waypoints: Waypoint[],
     routeLegs: RouteLegInterface[],
-    index: number
+    routeIndex:number,
 }
 const MapModal: React.FC<MapModalProps> = (props: MapModalProps) => {
-    const { waypoints = [], routeLegs = [], index } = props;
+    const { waypoints = [], routeIndex, routeLegs = [] } = props;
     const [map, setMap] = useState<any>();
     const [open, setOpen] = React.useState(false);
     useLayoutEffect(() => {
@@ -51,14 +51,15 @@ const MapModal: React.FC<MapModalProps> = (props: MapModalProps) => {
                 directionsManager.setRequestOptions({
                     routeMode: Microsoft.Maps.Directions.RouteMode.driving,
                     routeDraggable: false,
-                    routeIndex: 0,
+                    routeIndex,
+                    maxRoutes: 1,
                 });
             });
         };
         if (waypoints && map) {
             refreshMap();
         }
-    }, [waypoints, map]);
+    }, [waypoints, map, routeIndex]);
     return (
         <Modal
             onClose={() => setOpen(false)}

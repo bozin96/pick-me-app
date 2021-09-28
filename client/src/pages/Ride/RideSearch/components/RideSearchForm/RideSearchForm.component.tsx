@@ -68,10 +68,6 @@ const RideSearchForm: React.FC<any> = (props: any) => {
             endLatitude,
             dateTime,
         });
-        // "startWaypoint": "Niš, Serbia",
-        // "endWaypoint": "Prokuplje, Serbia",
-        // "numberOfPassengers": 2,
-        // "startDate": "9/14/2021 12:00:00 AM"
         ApiService.getRides({
             startLongitude,
             startLatitude,
@@ -80,9 +76,6 @@ const RideSearchForm: React.FC<any> = (props: any) => {
             dateTime,
             numberOfPassengers: Number(numberOfPassengers),
         }).subscribe((res) => RidesSearchResultsSubject.next(res));
-
-        // startLongitude=21.894499&startLatitude=43.316868&endLo
-        // ngitude=21.330828&endLatitude=43.579903&numberOfPassengers=2
     };
 
     const handleOnChange = (e: any): void => {
