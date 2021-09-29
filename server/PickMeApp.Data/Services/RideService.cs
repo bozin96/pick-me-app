@@ -41,6 +41,8 @@ namespace PickMeApp.Application.Services
             foreach (var ride in rideDtos)
             {
                 var drivePrice = 0.0f;
+                var driveTime = 0;
+                var minFreeSeats = ride.NumberOfPassengers;
                 var firstWaypointFound = false;
                 foreach (var routeLeg in ride.RouteLegs)
                 {
@@ -56,17 +58,21 @@ namespace PickMeApp.Application.Services
                     {
                         if (routeLeg.NumberOfFreeSpaces < resourceParameters.NumberOfPassengers)
                         {
-                            ride.HasFreeSeats = false;
+                            ride.NumberFreeSeats = 0;
                             break;
                         }
                         drivePrice += routeLeg.Price;
+                        driveTime += routeLeg.Time;
+                        minFreeSeats = routeLeg.NumberOfFreeSpaces < minFreeSeats ? routeLeg.NumberOfFreeSpaces : minFreeSeats;
                     }
 
                     // If end waypoint was found.
                     if ((resourceParameters.EndLongitude - 0.1) <= routeLeg.EndLongitude && routeLeg.EndLongitude <= (resourceParameters.EndLongitude + 0.1) &&
                        (resourceParameters.EndLatitude - 0.1) <= routeLeg.EndLatitude && routeLeg.EndLatitude <= (resourceParameters.EndLatitude + 0.1))
                     {
-                        ride.HasFreeSeats = routeLeg.NumberOfFreeSpaces >= resourceParameters.NumberOfPassengers;
+                        ride.Price = drivePrice;
+                        ride.Time = driveTime;
+                        ride.NumberFreeSeats = routeLeg.NumberOfFreeSpaces >= resourceParameters.NumberOfPassengers ? minFreeSeats : 0;
                         break;
                     }
                 }
@@ -90,7 +96,7 @@ namespace PickMeApp.Application.Services
                 // If waypoint is between start and end waypoint.
                 if (firstWaypointFound)
                 {
-                    if (routeLeg.NumberOfFreeSpaces < rideRequest.NumberOfPassengers)
+                    if (routeLeg.NumberOfFreeSpaces < rideRequest.NumberOfPlaces)
                     {
                         return false;
                     }
@@ -100,7 +106,7 @@ namespace PickMeApp.Application.Services
                 if ((rideRequest.EndLongitude - 0.1) <= routeLeg.EndLongitude && routeLeg.EndLongitude <= (rideRequest.EndLongitude + 0.1) &&
                     (rideRequest.EndLatitude - 0.1) <= routeLeg.EndLatitude && routeLeg.EndLatitude <= (rideRequest.EndLatitude + 0.1))
                 {
-                    return routeLeg.NumberOfFreeSpaces >= rideRequest.NumberOfPassengers;
+                    return routeLeg.NumberOfFreeSpaces >= rideRequest.NumberOfPlaces;
                 }
             }
             return false;
@@ -136,11 +142,11 @@ namespace PickMeApp.Application.Services
                 // If waypoint is between start and end waypoint.
                 if (firstWaypointFound && !endWaypointFound)
                 {
-                    if (routeLeg.NumberOfFreeSpaces < rideRequest.NumberOfPassengers)
+                    if (routeLeg.NumberOfFreeSpaces < rideRequest.NumberOfPlaces)
                     {
                         return (new StatusErrorDto("There is no free seats.", 409), ride);
                     }
-                    routeLeg.NumberOfFreeSpaces -= rideRequest.NumberOfPassengers;
+                    routeLeg.NumberOfFreeSpaces -= rideRequest.NumberOfPlaces;
                 }
 
                 // If end waypoint was found.

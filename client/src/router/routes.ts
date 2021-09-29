@@ -10,7 +10,7 @@ import redirect from './modules/redirect';
 export default [
   {
     path: '/not-found',
-    component: () => 'not found',
+    component: ():string => 'not found',
   },
   {
     path: '/auth',

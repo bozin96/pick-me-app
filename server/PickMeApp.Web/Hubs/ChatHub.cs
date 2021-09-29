@@ -53,7 +53,7 @@ namespace PickMeApp.Web.Hubs
                     {
                         Text = messageFromRepo.Text,
                         SenderId = userId,
-                        Timestamp = messageFromRepo.Timestamp.ToString("dd/MM/yyyy hh:mm:ss")
+                        Timestamp = messageFromRepo.Timestamp
                     });
             }
         }

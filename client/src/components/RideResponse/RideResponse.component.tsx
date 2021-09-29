@@ -6,7 +6,7 @@ import { RequestType } from '../../types';
 
 const RideResponse: React.FC<RequestType> = (props: RequestType) => {
     const {
-        Body: body = '', Header: header = '', Id: id, UserFromName: userFromName = '',
+       body = '', header = '', userFromName = '',
     } = props;
 
     return (

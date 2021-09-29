@@ -3,24 +3,56 @@
 .pm-message {
     display: flex;
     margin: 16px;
-    > span {
-        padding: 8px 16px;
-        border-radius: 16px;
-        border: 1px solid red;
-        width: 200px;
-        font-size: 18px;
+    flex-direction: column;
+    &__content {
+        color: white;
+        padding: 18px 20px;
+        line-height: 26px;
+        font-size: 16px;
+        border-radius: 7px;
+        width: 90%;
+        position: relative;
+    }
+    &__header {
+        margin-bottom: 8px;
     }
     &--right {
         justify-content: flex-end;
-        > span {
-            background-color: $primary;
-            border-color: $primary;
-            min-height: 40px;
+        align-items: flex-end;
+        position: relative;
+        .pm-message__content {
+            background: #86bb71;
+            &::after {
+                bottom: 100%;
+                right: 7%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+                border-bottom-color: #86bb71;
+                border-width: 10px;
+                margin-left: -10px;
+            }
         }
     }
     &--left {
-        > span {
-            background-color: $secondary;
+        .pm-message__content {
+            background: #94c2ed;
+            &::after {
+                bottom: 100%;
+                left: 7%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+                border-bottom-color: #94c2ed;
+                border-width: 10px;
+                margin-left: -10px;
+            }
         }
     }
 }

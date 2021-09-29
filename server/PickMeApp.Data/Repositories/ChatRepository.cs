@@ -26,6 +26,13 @@ namespace PickMeApp.Application.Repositories
             if (!string.IsNullOrEmpty(userId))
                 collection = collection.Where(e => e.FirstUserId == userId || e.SecondUserId == userId);
 
+            if(!string.IsNullOrEmpty(resourceParameters.SearchQuery))
+            {
+                string searchTerm = resourceParameters.SearchQuery.ToLower();
+                collection = collection.Where(e => (e.FirstUserId == userId && (e.SecondUser.FirstName.ToLower().Contains(searchTerm) || e.SecondUser.LastName.ToLower().Contains(searchTerm))) ||
+                                                   (e.SecondUserId == userId && (e.FirstUser.FirstName.ToLower().Contains(searchTerm) || e.FirstUser.LastName.ToLower().Contains(searchTerm))));
+            }
+
             collection = collection.Include(e => e.FirstUser).Include(e => e.SecondUser);
             collection = collection.OrderByDescending(e => e.LastMessageTimeStamp);
 

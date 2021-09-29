@@ -54,11 +54,12 @@ const RideForm: React.FC<any> = () => {
         const handleUpdate = (): void => {
             const waypoints = directionsManager.getAllWaypoints();
             const currentRoute = directionsManager.getCurrentRoute();
+            const { routeIndex } = directionsManager.getRequestOptions();
             setFormState((prev: any) => ({
                 ...prev,
                 waypoints,
                 routeLegs: currentRoute.routeLegs,
-                originalRouteIndex: currentRoute.routeLegs[0].originalRouteIndex,
+                routeIndex,
             }));
         };
         const refreshMap = (): void => {
@@ -137,8 +138,10 @@ const RideForm: React.FC<any> = () => {
     const handleOnSubmit = (): void => {
         const {
             waypoints = [], startDate, routeLegs = [], options, numberOfPassengers,
+            routeIndex,
         } = formState;
         const submitObject = {
+            routeIndex,
             startDate,
             numberOfPassengers: Number(numberOfPassengers),
             waypoints: waypoints.map((waypoint: any) => {

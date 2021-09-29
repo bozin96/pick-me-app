@@ -5,6 +5,9 @@
     align-items: center;
     background-color: white;
     flex: 1;
+    .ui.card {
+        max-width: 500px;
+    }
     &.ui.grid {
         padding: 64px;
     }

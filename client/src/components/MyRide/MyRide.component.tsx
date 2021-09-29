@@ -1,7 +1,8 @@
-import React from 'react';
+/* eslint-disable max-len */
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import {
-    Card, Header, Icon, List, Rating,
+    Card, Header, Icon, List, Rating, RatingProps,
 } from 'semantic-ui-react';
 import ApiService from '../../services/Api.service';
 import { MyRideInterface } from '../../types';
@@ -9,16 +10,19 @@ import './MyRide.styles.scss';
 
 const MyRide: React.FC<MyRideInterface> = (props: MyRideInterface) => {
     const {
-        startWaypoint, endWaypoint, driverName, rideId, id, review,
+        startWaypoint, endWaypoint, driverName, rideId, id, review: initialReview,
     } = props;
-    const handleRateDriver = (event: any, data: any): any => {
-        const { rating } = data;
 
-        ApiService.rateRide(rideId, rating, id).subscribe({
+    const [review, setReview] = useState<number>(initialReview);
+
+    const handleRateDriver = (event: any, data: RatingProps): void => {
+        const { rating } = data;
+        ApiService.rateRide(rideId, rating as number, id).subscribe({
             next(x) {
+                setReview(rating as number);
                 toast.success('Successfully Rated Ride');
             },
-            error(err) {
+            error() {
                 toast.error('Rating Failed');
             },
         });

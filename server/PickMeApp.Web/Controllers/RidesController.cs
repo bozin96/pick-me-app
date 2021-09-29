@@ -132,7 +132,7 @@ namespace PickMeApp.Web.Controllers
         [HttpPost(Name = "CreateRide")]
         public async Task<IActionResult> CreateRideAsync(RideForCreationDto ride)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !ride.IsValid())
             {
                 return ResponseModelStateErrors();
             }
@@ -310,7 +310,7 @@ namespace PickMeApp.Web.Controllers
                     rideRequest.StartWaypoint,
                     rideRequest.EndWaypoint,
                     rideFromRepo.StartDate,
-                    rideRequest.NumberOfPassengers),
+                    rideRequest.NumberOfPlaces),
                 UserFromId = user.Id,
                 UserToId = rideFromRepo.DriverId,
                 Payload = JsonConvert.SerializeObject(notificationPayload)
@@ -453,7 +453,7 @@ namespace PickMeApp.Web.Controllers
                 return ReturnError(StatusCodes.Status404NotFound, "Wrong ride id.");
             if (passengerOnRideFromRepo.PassengerId != userId)
                 return ReturnError(StatusCodes.Status403Forbidden, "You have no permission to review this ride.");
-            if(passengerOnRideFromRepo.Review.HasValue && passengerOnRideFromRepo.Review.Value !=0)
+            if (passengerOnRideFromRepo.Review.HasValue && passengerOnRideFromRepo.Review.Value != 0)
                 return ReturnError(StatusCodes.Status409Conflict, "You have already rated this ride.");
 
             var result = await _passengerOnRideRepository.AddReviewAsync(rideReview.Id, rideReview.Rate);

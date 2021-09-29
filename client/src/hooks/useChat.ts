@@ -16,7 +16,6 @@ export default (): any => {
 
     useEffect(() => {
         const establishConnection = async (): Promise<any> => {
-            console.log('KONNEKCIJA');
             const newConnection = new HubConnectionBuilder()
                 .withUrl('http://localhost:51052/chats', {
                     skipNegotiation: true,
@@ -40,6 +39,7 @@ export default (): any => {
                 .then((result: any): void => {
                     connection.on('ReceiveMessage', (message: any): void => {
                         newChatMessageSubject.next(message);
+                        console.log('ReceiveMessage', message);
                     });
                     connection.on('ReceiveOtherChatMessage', (chatId: string) => {
                         console.log('ReceiveOtherChatMessage', chatId);

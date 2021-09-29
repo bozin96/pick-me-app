@@ -4,23 +4,13 @@ import React, { useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { Button, Card } from 'semantic-ui-react';
 import ApiService from '../../services/Api.service';
+import { RideRequestNotificationInterface } from '../../types';
 
-interface RequestType {
-    body: string, // "Body content"
-    header: string, // "Header"
-    rideId: string, // "7ff2c780-a493-4908-8460-d665966fc3ff"
-    type: number, // 0
-    userFromName: string,
-    userFromId: string, // "6384b6be-7fb7-46a1-80df-8c8ba4c63835"
-    userFromImage: any,
-    userToId: string // "d3015522-d131-49dd-9220-4a50c0da3cd1
-    id: string
-}
-const RideRequest: React.FC<RequestType> = (props: RequestType) => {
-    console.log(props);
+const RideRequest: React.FC<RideRequestNotificationInterface> = (props: RideRequestNotificationInterface) => {
     const {
         rideId,
         body = '', header = '', id, userFromName = '',
+        isVisible = true,
     } = props;
 
     const declineRideRequest = useCallback(() => {
@@ -36,7 +26,8 @@ const RideRequest: React.FC<RequestType> = (props: RequestType) => {
     }, [id, rideId]);
 
     return (
-        <Card>
+        <Card className={!isVisible ? 'disabled' : ''}>
+
             <Card.Content>
                 <Card.Header>
                     {userFromName}

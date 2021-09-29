@@ -22,8 +22,6 @@ const RideRequestsCard: React.FC = () => {
       error(err) {
         setIsFetching(false);
       },
-      complete() {
-      },
     });
   }, []);
   return (

@@ -24,7 +24,7 @@ const DrivingHistoryCard: React.FC = () => {
           setRides(x);
           setIsFetching(false);
         },
-        error(err) {
+        error() {
           setIsFetching(false);
         },
         complete() {

@@ -16,7 +16,8 @@ import './RideSearch.styles.scss';
 const RideSearch: React.FC = () => {
   const [ridesList, setRidesList] = useState<any>([]);
   const [searchRideInfo, setSearchRideInfo] = useState({});
-const [chatInfo, setChatInfo] = useState<any>({});
+  const [chatInfo, setChatInfo] = useState<any>({});
+
   useEffect(() => {
     RidesSearchResultsSubject.subscribe((res) => setRidesList(res));
   }, []);
@@ -26,13 +27,13 @@ const [chatInfo, setChatInfo] = useState<any>({});
   }, []);
 
   const handleRideApply = useCallback((rideId: string): void => {
-    ApiService.requestRide(rideId, searchRideInfo).subscribe((res) => toast('Ride Applied Successfully'));
+    ApiService.requestRide(rideId, searchRideInfo).subscribe(() => toast('Ride Applied Successfully'));
   }, [searchRideInfo]);
 
   const baseClass = 'pm-ride-search';
 
-  const handleChatClick = (userId:string):void => {
-    ApiService.getOrCreateChat(userId).subscribe((res:any) => setChatInfo({ ...res, receiverId: userId }));
+  const handleChatClick = (userId: string): void => {
+    ApiService.getOrCreateChat(userId).subscribe((res: any) => setChatInfo({ ...res, receiverId: userId }));
   };
 
   return (

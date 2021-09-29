@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable jsx-a11y/anchor-is-valid */
@@ -7,8 +8,9 @@ import React, {
 } from 'react';
 import {
     Button,
-    Card, CardContent, Icon, Label, List, Rating,
+    Card, CardContent, Icon, Label, List,
 } from 'semantic-ui-react';
+import DateService from '../../services/Date.service';
 import { MyDriveInterface } from '../../types';
 import MapModal from '../MapModal';
 import './Ride.styles.scss';
@@ -23,11 +25,16 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
     const {
         ride: {
             waypoints = [], routeLegs = [],
-            startDate, id: rideId = '', numberOfPassengers,
+            startDate,
+            id: rideId = '',
+            numberOfPassengers,
             driverName,
             driverRate,
             driverId,
             routeIndex,
+            price,
+            time,
+            numberFreeSeats,
         },
         onChatClick,
         onApply,
@@ -40,23 +47,35 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
         onApply(rideId);
     }, [onApply, rideId]);
 
+    const secondsToHms = useMemo(() => {
+        const h = Math.floor(Number(time) / 3600);
+        const m = Math.floor(Number(time) % 3600 / 60);
+
+        const hDisplay = h > 0 ? h + (h === 1 ? ' hour, ' : ' hours') : '';
+        const mDisplay = m > 0 ? m + (m === 1 ? ' minute, ' : ' minutes') : '';
+        return `${hDisplay} ${mDisplay}`;
+    }, [time]);
+
     return (
-        <Card>
+        <Card className={!numberFreeSeats ? 'disabled' : ''}>
             <CardContent>
                 <Card.Header>
                     <a href="#">
                         <h3>{driverName}</h3>
                     </a>
                     <span>
-                        {startDate}
+                        Start Time: &nbsp;
+                        {DateService.getFullDateLocal(startDate)}
                     </span>
-                    <Rating icon="star" size="large" defaultRating={driverRate} maxRating={5} disabled />
+                    <span>
+                        {`${driverRate} / 5`}
+                            <Icon name="star" />
+                    </span>
                 </Card.Header>
                 <Card.Meta>
                     <List>
                         <List.Item>
                             <Icon name="marker" />
-
                             <List.Content>
                                 {startLocation}
                             </List.Content>
@@ -88,15 +107,19 @@ const Ride: React.FC<RideProps> = (props: RideProps) => {
                 <Card.Description>
                     <Label as="a" size="large" color="teal">
                         <Icon name="dollar sign" />
-                        500.00
+                        {price}
                     </Label>
                     <Label as="a" size="large" color="yellow">
                         <Icon name="time" />
-                        60 min
+                        {secondsToHms}
                     </Label>
                     <Label as="a" size="large" color="teal">
-                        Free Seats:
+                        Seats:
                         {numberOfPassengers}
+                    </Label>
+                    <Label as="a" size="large" color="yellow">
+                        Free Seats:
+                        {numberFreeSeats}
                     </Label>
                 </Card.Description>
                 <Card.Description>

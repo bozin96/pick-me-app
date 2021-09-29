@@ -24,7 +24,10 @@ export interface MyDriveInterface {
     driverName: string,
     driverId:string,
     driverRate: number,
-    routeIndex: number
+    routeIndex: number,
+    price:number,
+    time:string,
+    numberFreeSeats:number
 }
 
 export interface UserLoginInteface {
@@ -49,15 +52,15 @@ export interface AuthApiResponse {
 }
 
 export interface RequestType {
-    Body: string, // "Body content"
-    Header: string, // "Header"
-    RideId: string, // "7ff2c780-a493-4908-8460-d665966fc3ff"
-    Type: number, // 0
-    UserFromName: string,
-    UserFromId: string, // "6384b6be-7fb7-46a1-80df-8c8ba4c63835"
-    UserFromImage: any,
-    UserToId: string // "d3015522-d131-49dd-9220-4a50c0da3cd1
-    Id: string
+    body: string, // "Body content"
+    header: string, // "Header"
+    rideId: string, // "7ff2c780-a493-4908-8460-d665966fc3ff"
+    type: number, // 0
+    userFromName: string,
+    userFromId: string, // "6384b6be-7fb7-46a1-80df-8c8ba4c63835"
+    userFromImage: any,
+    userToId: string // "d3015522-d131-49dd-9220-4a50c0da3cd1
+    id: string
 }
 
 export interface User {
@@ -100,7 +103,8 @@ export interface ChatInteface {
     secondUserId: string,
     secondUserName: string,
     secondUserPhoto: string,
-    numberOfUnreadedMessages:number
+    numberOfUnreadedMessages:number,
+    lastMessageSenderId:number,
 }
 
 export interface ChatMessageInteface {
@@ -112,4 +116,16 @@ export interface ChatMessageInteface {
     sendUserId: string,
     text: string,
     timestamp: string,
+}
+export interface RideRequestNotificationInterface {
+    body: string,
+    header: string,
+    rideId: string,
+    type: number,
+    userFromName: string,
+    userFromId: string,
+    userFromImage: string,
+    userToId: string,
+    id: string,
+    isVisible:boolean
 }

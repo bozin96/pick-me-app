@@ -28,18 +28,20 @@ const Notifications: React.FC = () => {
         });
     }, []);
     return (
+
         <div className={baseClass}>
-            <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
-                {notifications.map((req: any) => {
-                    if (req.type === 'RequestForRide') {
-                       return <RideRequest {...req} />;
-                    }
-                    if (req.type === 'ResponseForRide') {
+            {notifications.length && (
+
+                <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
+                    {notifications.map((req: any) => {
+                        if (req.type === 'RequestForRide') {
+                            return <RideRequest {...req} />;
+                        }
+
                         return <RideResponse {...req} />;
-                    }
-                    return undefined;
-                })}
-            </Dimmer.Dimmable>
+                    })}
+                </Dimmer.Dimmable>
+            )}
         </div>
     );
 };

@@ -33,9 +33,9 @@ namespace PickMeApp.Application.Repositories
             if (resourceParameters.DateTime != new DateTime())
             {
                 collection = collection.Where(e =>
-                    e.StartDate.Day == resourceParameters.DateTime.Day &&
-                    e.StartDate.Month == resourceParameters.DateTime.Month &&
-                    e.StartDate.Year == resourceParameters.DateTime.Year);
+                    e.StartDate.Day == resourceParameters.DateTime.ToUniversalTime().Day &&
+                    e.StartDate.Month == resourceParameters.DateTime.ToUniversalTime().Month &&
+                    e.StartDate.Year == resourceParameters.DateTime.ToUniversalTime().Year);
             }
             else
             {

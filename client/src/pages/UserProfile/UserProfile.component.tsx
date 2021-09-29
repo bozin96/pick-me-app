@@ -11,8 +11,8 @@ import {
     Dimmer,
     Form,
     Header,
+    Icon,
     Image,
-    Rating,
 } from 'semantic-ui-react';
 import { userInfoSubject } from '../../common/observers';
 import ApiService from '../../services/Api.service';
@@ -45,6 +45,7 @@ const UserProfile: React.FC = () => {
                         userPhoto,
                         email,
                         averageRate,
+                        numberOfRates,
                     } = res;
                     const data = {
                         firstName,
@@ -52,6 +53,7 @@ const UserProfile: React.FC = () => {
                         middleName,
                         email,
                         averageRate,
+                        numberOfRates,
                         userPhoto: userPhoto
                             ? `data:image/png;base64,${userPhoto}`
                             : 'https://react.semantic-ui.com/images/wireframe/image.png',
@@ -187,12 +189,9 @@ const UserProfile: React.FC = () => {
                     </Card.Content>
                     {!editMode && (
                         <Card.Content extra>
-                            <Rating
-                                rating={userInfo?.averageRate}
-                                maxRating={5}
-                                size="huge"
-                                disabled
-                            />
+                             {`${userInfo?.averageRate} / 5`}
+                        <Icon name="star" />
+                        {` from ${userInfo?.numberOfRates} rates`}
                         </Card.Content>
                     )}
                     {isMe && (

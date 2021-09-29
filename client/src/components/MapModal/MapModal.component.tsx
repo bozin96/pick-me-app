@@ -12,8 +12,8 @@ type MapModalProps = {
     routeLegs: RouteLegInterface[],
     routeIndex:number,
 }
-const MapModal: React.FC<MapModalProps> = (props: MapModalProps) => {
-    const { waypoints = [], routeIndex, routeLegs = [] } = props;
+const MapModal: React.FC<Partial<MapModalProps>> = (props: Partial<MapModalProps>) => {
+    const { waypoints = [], routeIndex } = props;
     const [map, setMap] = useState<any>();
     const [open, setOpen] = React.useState(false);
     useLayoutEffect(() => {

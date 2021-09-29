@@ -16,7 +16,7 @@ namespace PickMeApp.Core.Models.Notification
 
         public string EndWaypoint { get; set; }
 
-        public int NumberOfPassengers { get; set; }
+        public int NumberOfPlaces { get; set; }
 
         public DateTime StartDate { get; set; }
 

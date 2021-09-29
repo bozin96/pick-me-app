@@ -1,0 +1,6 @@
+.ui.card {
+    &.disabled {
+        pointer-events: all;
+        opacity: 0.5;
+    }
+}

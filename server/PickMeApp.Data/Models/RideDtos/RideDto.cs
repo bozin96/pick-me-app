@@ -20,12 +20,16 @@ namespace PickMeApp.Application.Models.RideDtos
 
         public bool PetFriendly { get; set; }
 
-        public bool HasFreeSeats { get; set; }
+        public int NumberFreeSeats { get; set; }
 
         public string DriverName { get; set; }
 
         public string DriverId { get; set; }
 
         public float DriverRate { get; set; }
+
+        public float Price { get; set; }
+
+        public int Time { get; set; }
     }
 }

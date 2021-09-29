@@ -4,22 +4,34 @@
     display: flex;
     flex-direction: column;
     border: 1px solid $background;
-    &__container {
-        background-color: white;
-        display: flex;
-        flex-direction: column;
-        overflow: auto;
-        width: 500px;
+    float: left;
+    background: #f2f5f8;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    color: #434651;
+    width: 500px;
+
+    &__history {
+        padding: 30px 30px 20px;
+        border-bottom: 2px solid white;
+        overflow-y: scroll;
         height: 500px;
+        ul {
+            list-style: none;
+        }
     }
     &__input-container {
+        padding: 32px;
+        textarea {
+            width: 100%;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            resize: none;
+        }
         display: flex;
-        .ui.input {
-            flex: 1;
-        }
-        button {
-            min-width: 120px;
-            margin: 0 !important;
-        }
+        flex-direction: column;
+        align-items: flex-end;
     }
 }

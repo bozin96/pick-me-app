@@ -5,9 +5,7 @@ import useMap from '../../../../../hooks/useMap';
 import ApiService from '../../../../../services/Api.service';
 import './RideSearchForm.styles.scss';
 
-type RideSearchFormTypes = {
-}
-const RideSearchForm: React.FC<any> = (props: any) => {
+const RideSearchForm: React.FC = () => {
     const baseClass = 'pm-ride-search-form';
     const map = useMap();
     const [formState, setFormState] = useState<any>();
@@ -49,7 +47,7 @@ const RideSearchForm: React.FC<any> = (props: any) => {
 
     const handleOnSubmit = (): void => {
         const {
-            destinationFrom, destinationTo, dateTime, numberOfPassengers,
+            destinationFrom, destinationTo, dateTime, numberOfPlaces,
         } = formState;
 
         const startLongitude = destinationFrom.pin.location.longitude;
@@ -61,7 +59,7 @@ const RideSearchForm: React.FC<any> = (props: any) => {
             startWaypoint: destinationFrom.tag,
             endWaypoint: destinationTo.tag,
             startDate: dateTime,
-            numberOfPassengers: Number(numberOfPassengers),
+            numberOfPlaces: Number(numberOfPlaces),
             startLongitude,
             startLatitude,
             endLongitude,
@@ -74,7 +72,7 @@ const RideSearchForm: React.FC<any> = (props: any) => {
             endLongitude,
             endLatitude,
             dateTime,
-            numberOfPassengers: Number(numberOfPassengers),
+            numberOfPlaces: Number(numberOfPlaces),
         }).subscribe((res) => RidesSearchResultsSubject.next(res));
     };
 
@@ -89,7 +87,7 @@ const RideSearchForm: React.FC<any> = (props: any) => {
             <Header> Search For the Ride</Header>
             <div id="searchBoxContainerDestinationFrom">
                 <Form.Input
-                    label="Form"
+                    label="From"
                     id="destinationFrom"
                     name="tag"
                 />
@@ -112,7 +110,7 @@ const RideSearchForm: React.FC<any> = (props: any) => {
                 type="number"
                 max={8}
                 min={0}
-                name="numberOfPassengers"
+                name="numberOfPlaces"
                 onChange={handleOnChange}
             />
             <Button type="submit">Search</Button>

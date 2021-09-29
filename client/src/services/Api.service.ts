@@ -30,7 +30,7 @@ const getUser = (userId: string): Observable<User> => defer(() => httpClient.get
 
 const updateUser = (userId: string, data: Partial<User>): Observable<User> => defer(() => httpClient.put(`/users/${userId}`, data)).pipe(map((res: AxiosResponse) => res.data as User));
 
-const getChats = (): Observable<ChatInteface[]> => defer(() => httpClient.get('/chats')).pipe(map((res: AxiosResponse) => res.data as ChatInteface[]));
+const getChats = (searchQuery :string | undefined): Observable<ChatInteface[]> => defer(() => httpClient.get('/chats', { params: { searchQuery } })).pipe(map((res: AxiosResponse) => res.data as ChatInteface[]));
 
 const getChatMessages = (chatId: string): Observable<ChatMessageInteface[]> => defer(() => httpClient.get(`/chats/${chatId}/messages`)).pipe(map((res: AxiosResponse) => res.data as ChatMessageInteface[]));
 
