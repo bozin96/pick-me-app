@@ -4,13 +4,8 @@ using System.Text;
 
 namespace PickMeApp.Application.Models.ChatDtos
 {
-    public class OpenChatDto
+    public class CloseChatDto
     {
         public Guid ChatId { get; set; }
-
-        public bool HasUnreadedMessages { get; set; }
-
-        public Guid PrevChatId { get; set; }
-
     }
 }

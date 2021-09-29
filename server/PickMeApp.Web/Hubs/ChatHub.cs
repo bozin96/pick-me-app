@@ -5,6 +5,7 @@ using PickMeApp.Application.Models.ChatDtos;
 using PickMeApp.Core.Models.Message;
 using PickMeApp.Web.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace PickMeApp.Web.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
-        private static List<UserChatViewModel> _ActiveUsers = new List<UserChatViewModel>();
+        private static ConcurrentDictionary<string, List<ChatViewModel>> _ActiveChats = new ConcurrentDictionary<string, List<ChatViewModel>>();
         private readonly IChatRepository _chatRepository;
 
         public ChatHub(IChatRepository chatRepository)
@@ -24,60 +25,64 @@ namespace PickMeApp.Web.Hubs
 
         public async Task SendMessage(MessageDto request)
         {
-            string userId = IdentityName;
-            Guid currentChatId = _ActiveUsers
-                    .Where(u => u.Id == request.ReceiverId)
-                    .Select(u => u.CurrentChat)
-                    .FirstOrDefault();
+            // Check if the chat is not open to the user to whom the message is being sent.
+            bool isChatActive = true;
 
-            // If the chat is not open to the receiving user the message.
-            bool isChatActive = currentChatId == request.ChatId;
-            Message messageFromRepo = await _chatRepository.CreateMessageAsync(request.ChatId, request.Text, userId, isChatActive);
-            if (messageFromRepo == null)
+            _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
+            // User is not active
+            if (chats == null)
             {
-                await Clients.Caller.SendAsync("onError", "SendMessage: Chat with given id does not exist.");
+                isChatActive = false;
             }
-
-            if (!isChatActive)
+            var connections = chats.Where(c => c.CurrentChat == request.ChatId).Select(c => c.ConnectionId).ToList();
+            // User is active but chat is not open, send notification.
+            if (connections.Count == 0)
             {
+                isChatActive = false;
                 await Clients.Users(request.ReceiverId)
                     .SendAsync("ReceiveOtherChatMessage", new
                     {
                         ChatId = request.ChatId
                     });
             }
-            else
+
+            Message messageFromRepo = await _chatRepository.CreateMessageAsync(request.ChatId, request.Text, IdentityName, isChatActive);
+            if (messageFromRepo == null)
             {
+                await Clients.Caller.SendAsync("onError", "SendMessage: Chat with given id does not exist.");
+            }
+
+            // If chat is active send message.
+            if (isChatActive)
                 await Clients.Users(request.ReceiverId)
                     .SendAsync("ReceiveMessage", new
                     {
                         Text = messageFromRepo.Text,
-                        SenderId = userId,
+                        SenderId = IdentityName,
                         Timestamp = messageFromRepo.Timestamp
                     });
-            }
         }
 
+        // kad menja setuje novi umesto starog
         public async Task OpenChat(OpenChatDto request)
         {
             try
             {
-                var userViewModel = _ActiveUsers.FirstOrDefault(u => u.Id == IdentityName);
-                if (userViewModel == null)
+                _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
+                if (chats != null)
                 {
-                    userViewModel = new UserChatViewModel(IdentityName, request.ChatId);
-                    _ActiveUsers.Add(userViewModel);
+                    // remove old chat for connection and add new.
+                    chats.RemoveAll(c => c.ConnectionId == Context.ConnectionId);
+                    chats.Add(new ChatViewModel(Context.ConnectionId, request.ChatId));
                 }
                 else
                 {
-                    _ActiveUsers.Remove(userViewModel);
-                    _ActiveUsers.Add(new UserChatViewModel(IdentityName, request.ChatId));
+                    chats = new List<ChatViewModel>() { new ChatViewModel(Context.ConnectionId, request.ChatId) };
                 }
+                _ActiveChats.AddOrUpdate(IdentityName, chats, (IdentityName, chats) => chats);
 
                 if (request.HasUnreadedMessages)
-                {
                     await _chatRepository.CleanUnreadedMessagesCounterAsync(request.ChatId, IdentityName);
-                }
             }
             catch (Exception ex)
             {
@@ -86,15 +91,22 @@ namespace PickMeApp.Web.Hubs
             return;
         }
 
+        // samo kad menja page
+        public void CloseChat(CloseChatDto request)
+        {
+            _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
+            if (chats != null)
+            {
+                chats.RemoveAll(c => c.ConnectionId == Context.ConnectionId && c.CurrentChat == request.ChatId);
+                _ActiveChats.AddOrUpdate(IdentityName, chats, (IdentityName, chats) => chats);
+            }
+        }
+
         public override Task OnConnectedAsync()
         {
             try
             {
-                if (!_ActiveUsers.Any(u => u.Id == IdentityName))
-                {
-                    var userViewModel = new UserChatViewModel(IdentityName);
-                    _ActiveUsers.Add(userViewModel);
-                }
+                _ActiveChats.TryAdd(IdentityName, new List<ChatViewModel>());
             }
             catch (Exception ex)
             {
@@ -107,8 +119,15 @@ namespace PickMeApp.Web.Hubs
         {
             try
             {
-                var user = _ActiveUsers.Where(u => u.Id == IdentityName).First();
-                _ActiveUsers.Remove(user);
+                _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
+                if (chats != null)
+                {
+                    chats.RemoveAll(c => c.ConnectionId == Context.ConnectionId);
+
+                    _ActiveChats.Remove(IdentityName, out List<ChatViewModel> removedChats);
+                    if (chats.Count != 0)
+                        _ActiveChats.TryAdd(IdentityName, chats);
+                }
             }
             catch (Exception ex)
             {

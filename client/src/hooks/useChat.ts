@@ -11,13 +11,15 @@ import { newChatMessageSubject, newUnreadedMessage } from '../common/observers';
 import CredentialsService from '../services/Credentials.service';
 import { ChatMessageSend } from '../types';
 
+const url = process.env.REACT_APP_BE_URL;
+
 export default (): any => {
     const [connection, setConnection] = useState<any>();
 
     useEffect(() => {
         const establishConnection = async (): Promise<any> => {
             const newConnection = new HubConnectionBuilder()
-                .withUrl('http://localhost:51052/chats', {
+                .withUrl(`${url}/chats`, {
                     skipNegotiation: true,
                     transport: HttpTransportType.WebSockets,
                     accessTokenFactory: () => CredentialsService.getToken(),

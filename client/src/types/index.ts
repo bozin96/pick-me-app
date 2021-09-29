@@ -1,4 +1,4 @@
-export interface RouteLegInterface {
+export interface RouteLeg {
     startLongitude: number,
     startLatitude: number,
     endLongitude: number,
@@ -17,17 +17,17 @@ export interface Waypoint {
 export interface MyDriveInterface {
     id: string;
     startDate: string,
-    routeLegs: RouteLegInterface[];
+    routeLegs: RouteLeg[];
     waypoints: Waypoint[];
     numberOfPassengers: number;
     petFriendly: boolean;
     driverName: string,
-    driverId:string,
+    driverId: string,
     driverRate: number,
     routeIndex: number,
-    price:number,
-    time:string,
-    numberFreeSeats:number
+    price: number,
+    time: string,
+    numberFreeSeats: number
 }
 
 export interface UserLoginInteface {
@@ -103,8 +103,8 @@ export interface ChatInteface {
     secondUserId: string,
     secondUserName: string,
     secondUserPhoto: string,
-    numberOfUnreadedMessages:number,
-    lastMessageSenderId:number,
+    numberOfUnreadedMessages: number,
+    lastMessageSenderId: number,
 }
 
 export interface ChatMessageInteface {
@@ -127,5 +127,15 @@ export interface RideRequestNotificationInterface {
     userFromImage: string,
     userToId: string,
     id: string,
-    isVisible:boolean
+    isVisible: boolean
+}
+
+export interface Notification {
+    rideId: string,
+    type: 'RequestForRide' | 'ResponseOnRideRequest' | 'RideReview',
+    header: string,
+    body: string,
+    userFromId: string,
+    userToId: string,
+    payload: string
 }

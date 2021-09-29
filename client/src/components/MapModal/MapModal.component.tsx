@@ -5,11 +5,11 @@ import {
     Button, Icon, Modal,
 } from 'semantic-ui-react';
 import MapService from '../../services/Map.service';
-import { RouteLegInterface, Waypoint } from '../../types';
+import { RouteLeg, Waypoint } from '../../types';
 
 type MapModalProps = {
     waypoints: Waypoint[],
-    routeLegs: RouteLegInterface[],
+    routeLegs: RouteLeg[],
     routeIndex:number,
 }
 const MapModal: React.FC<Partial<MapModalProps>> = (props: Partial<MapModalProps>) => {

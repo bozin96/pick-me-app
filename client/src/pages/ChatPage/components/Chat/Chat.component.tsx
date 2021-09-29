@@ -20,10 +20,14 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     const { chatId, receiverId } = props;
     const [chatMessages, setChatMessages] = useState<ChatMessageInteface[]>([]);
     const [currentMessage, setCurrentMessage] = useState<string>('');
-
+    const [params, setParams] = useState({
+        pageSize: 10,
+        pageNumber: 1,
+    });
     const chatContainer = useRef<any>();
 
     const { sendMessage } = useChat();
+
     const handleOnChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
         setCurrentMessage(e.target.value);
     };
@@ -33,20 +37,16 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     };
 
     useEffect(() => {
-        if (chatId) {
-            ApiService.getChatMessages(chatId).subscribe((res: ChatMessageInteface[]): void => {
-                setChatMessages(res
-                    .sort((a: any, b: any) => {
-                        const dateA = new Date(a.timestamp);
-                        const dateB = new Date(b.timestamp);
-                        return dateA > dateB ? 1 : -1;
-                    }));
-                setTimeout(() => {
-                    updateScroll();
-                }, 1000);
+        const fetchMessages = (): void => {
+            ApiService.getChatMessages(chatId, params).subscribe((res: ChatMessageInteface[]): void => {
+                setChatMessages((prev: any) => ([...res, ...prev]
+                ));
             });
+        };
+        if (chatId) {
+            fetchMessages();
         }
-    }, [chatId]);
+    }, [chatId, params]);
 
     const handleSendMessage = (): void => {
         if (!chatId) {
@@ -98,7 +98,10 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
 
     return (
         <div className="pm-single-chat">
-            <div className="pm-single-chat__history" ref={chatContainer}>
+            <div id="chatHistory" className="pm-single-chat__history" ref={chatContainer}>
+                {chatId && (
+                    <Button onClick={() => setParams((prev: any) => ({ ...prev, pageNumber: prev.pageNumber + 1 }))}>Load More</Button>
+                )}
                 {chatMessages.map((msg: ChatMessageReceive) => (
                     <ChatMessage right={CredentialsService.getUserId() === msg.sendUserId} text={msg.text} timestamp={msg.timestamp} />
                 ))}

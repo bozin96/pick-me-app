@@ -1,47 +1,32 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from 'react';
-import { Dimmer, Segment } from 'semantic-ui-react';
+import { NotificationsSubject } from '../../common/observers';
 import RideRequest from '../../components/RideRequest';
 import RideResponse from '../../components/RideResponse';
-import ApiService from '../../services/Api.service';
-import CredentialsService from '../../services/Credentials.service';
 import './Notifications.styles.scss';
 
 const Notifications: React.FC = () => {
     const baseClass = 'pm-notifications';
-    const [notifications, setNotifications] = useState<any[]>([]);
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [notifications, setNotificaitons] = useState<Notification[]>([]);
+
     useEffect(() => {
-        // setIsFetching(true);
-        ApiService.getNotifications(CredentialsService.getUserId()).subscribe({
-
-            next(x) {
-                setNotifications(x);
-                setIsFetching(false);
-            },
-            error(err) {
-                setIsFetching(false);
-            },
-            complete() {
-                console.log('done');
-            },
-        });
+        NotificationsSubject.subscribe({
+ next(res) {
+            console.log(res);
+            setNotificaitons(res as any);
+},
+});
     }, []);
+
     return (
-
         <div className={baseClass}>
-            {notifications.length && (
+            {notifications.map((req: any) => {
+                if (req.type === 'RequestForRide') {
+                    return <RideRequest {...req} />;
+                }
 
-                <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
-                    {notifications.map((req: any) => {
-                        if (req.type === 'RequestForRide') {
-                            return <RideRequest {...req} />;
-                        }
-
-                        return <RideResponse {...req} />;
-                    })}
-                </Dimmer.Dimmable>
-            )}
+                return <RideResponse {...req} />;
+            })}
         </div>
     );
 };

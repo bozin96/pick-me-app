@@ -1,15 +1,15 @@
 /* eslint-disable no-param-reassign */
-import Axios from 'axios';
+import Axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { toast } from 'react-toastify';
 import CredentialsService from '../services/Credentials.service';
 
-const httpClient = Axios.create({
-  baseURL: 'http://localhost:51052/api/',
+const axiosInstance = Axios.create({
+  baseURL: `${process.env.REACT_APP_BE_URL}/api`,
 
 });
 
-httpClient.interceptors.request.use(
-  (config: any) => {
+axiosInstance.interceptors.request.use(
+  (config: AxiosRequestConfig) => {
     // Do something before request is sent
     // If the header does not contain the token and the url not public, redirect to login
 
@@ -23,9 +23,9 @@ httpClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-httpClient.interceptors.response.use(
-  (result: any) => result,
-  (error: any) => {
+axiosInstance.interceptors.response.use(
+  (result: AxiosRequestConfig) => result,
+  (error: AxiosError) => {
     if (error.response && [401, 403].includes(error.response.status)) {
       if (error.response.data?.error === 'Wrong username or password') {
         console.error(error.response.data);
@@ -41,4 +41,4 @@ httpClient.interceptors.response.use(
   },
 );
 
-export default httpClient;
+export default axiosInstance;

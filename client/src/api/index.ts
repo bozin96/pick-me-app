@@ -1,20 +1,20 @@
 /* eslint-disable max-len */
 import { defer, map, Observable } from 'rxjs';
-import httpClient from './httpClient';
+import axiosInstace from './axiosInstance';
 
-const get = <T>(url: string, queryParams?: any): Observable<T> => defer(() => httpClient.get<T>(url, { params: queryParams }))
+const get = <T>(url: string, queryParams?: any): Observable<T> => defer(() => axiosInstace.get<T>(url, { params: queryParams }))
     .pipe(map((result) => result.data));
 
-const post = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => httpClient.post<T>(url, body, { params: queryParams }))
+const post = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => axiosInstace.post<T>(url, body, { params: queryParams }))
     .pipe(map((result) => result.data));
 
-const put = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => httpClient.put<T>(url, body, { params: queryParams }))
+const put = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => axiosInstace.put<T>(url, body, { params: queryParams }))
     .pipe(map((result) => result.data));
 
-const patch = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => httpClient.patch<T>(url, body, { params: queryParams }))
+const patch = <T>(url: string, body: any, queryParams?: any): Observable<T | void> => defer(() => axiosInstace.patch<T>(url, body, { params: queryParams }))
     .pipe(map((result) => result.data));
 
-const deleteR = <T>(url: string, id: number): Observable<T | void> => defer(() => (httpClient.delete(`${url}/${id}`)))
+const deleteR = <T>(url: string, id: number): Observable<T | void> => defer(() => (axiosInstace.delete(`${url}/${id}`)))
     .pipe(map((result) => result.data));
 
 export default {
