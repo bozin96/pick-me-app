@@ -9,8 +9,5 @@ namespace PickMeApp.Application.Models.ChatDtos
         public Guid ChatId { get; set; }
 
         public bool HasUnreadedMessages { get; set; }
-
-        public Guid PrevChatId { get; set; }
-
     }
 }

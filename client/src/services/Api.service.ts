@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { defer, map, Observable } from 'rxjs';
 import axiosInstace from '../api/axiosInstance';
 import {
-    AuthApiResponse, ChatInteface, ChatMessageInteface, MyDriveInterface, MyRideInterface, User, UserLoginInteface, UserRegisterInteface,
+    AuthApiResponse, IChat, IChatMessage, MyDriveInterface, MyRideInterface, User, UserLoginInteface, UserRegisterInteface,
 } from '../types/index';
 
 const login = (data: UserLoginInteface): Observable<AuthApiResponse> => defer(() => axiosInstace.post('/auth/login', data)).pipe(map((res) => res.data as AuthApiResponse));
@@ -30,9 +30,9 @@ const getUser = (userId: string): Observable<User> => defer(() => axiosInstace.g
 
 const updateUser = (userId: string, data: Partial<User>): Observable<User> => defer(() => axiosInstace.put(`/users/${userId}`, data)).pipe(map((res: AxiosResponse) => res.data as User));
 
-const getChats = (searchQuery :string | undefined): Observable<ChatInteface[]> => defer(() => axiosInstace.get('/chats', { params: { searchQuery } })).pipe(map((res: AxiosResponse) => res.data as ChatInteface[]));
+const getChats = (searchQuery :string | undefined): Observable<IChat[]> => defer(() => axiosInstace.get('/chats', { params: { searchQuery } })).pipe(map((res: AxiosResponse) => res.data as IChat[]));
 
-const getChatMessages = (chatId: string, params:any): Observable<ChatMessageInteface[]> => defer(() => axiosInstace.get(`/chats/${chatId}/messages`, { params })).pipe(map((res: AxiosResponse) => res.data as ChatMessageInteface[]));
+const getChatMessages = (chatId: string, params:any): Observable<IChatMessage[]> => defer(() => axiosInstace.get(`/chats/${chatId}/messages`, { params })).pipe(map((res: AxiosResponse) => res.data as IChatMessage[]));
 
 const rateRide = (rideId: string, rate: number, id: string): Observable<any> => defer(() => axiosInstace.post(`/rides/${rideId}/rate`, {
     rate,
@@ -40,8 +40,6 @@ const rateRide = (rideId: string, rate: number, id: string): Observable<any> => 
 }));
 
 const getOrCreateChat = (userId:string):Observable<any> => defer(() => axiosInstace.post('/chats', { userId })).pipe(map((res:AxiosResponse) => res.data));
-
-const openChat = (chatId:string, hasnumberOfUnreadedMessages:boolean):Observable<any> => defer(() => axiosInstace.post('/openChat', { chatId, hasnumberOfUnreadedMessages })).pipe(map((res:AxiosResponse) => res.data));
 
 export default {
     login,
@@ -59,5 +57,4 @@ export default {
     getChatMessages,
     rateRide,
     getOrCreateChat,
-    openChat,
 };

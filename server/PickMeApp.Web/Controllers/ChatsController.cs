@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using PickMeApp.Application.Helpers;
 using PickMeApp.Application.Interfaces;
 using PickMeApp.Application.Models.ChatDtos;
 using PickMeApp.Core.Constants;
+using PickMeApp.Web.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +20,17 @@ namespace PickMeApp.Web.Controllers
     {
         private readonly IChatRepository _chatRepository;
         private readonly IMapper _mapper;
+        private readonly IHubContext<ChatHub> _chatContext;
 
         public ChatsController(
             IChatRepository chatRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IHubContext<ChatHub> chatContext)
         {
             _chatRepository = chatRepository ?? throw new ArgumentNullException(nameof(chatRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _chatContext = chatContext ?? throw new ArgumentNullException(nameof(chatContext));
+
         }
 
         [HttpGet]
@@ -54,13 +60,21 @@ namespace PickMeApp.Web.Controllers
                 return ResponseModelStateErrors();
             }
 
+            var chatDto = new ChatDto();
             var currentUserId = GetUserId();
             var chat = await _chatRepository.GetChatByUsersAsync(currentUserId, request.UserId);
             if (chat == null)
+            {
                 chat = await _chatRepository.CreateChat(currentUserId, request.UserId);
 
-
-            return Ok(_mapper.Map<ChatDto>(chat));
+                chatDto = _mapper.Map<ChatDto>(chat);
+                await _chatContext.Clients.User(request.UserId).SendAsync("NewChatRequest", chatDto);
+            }
+            else
+            {
+                chatDto = _mapper.Map<ChatDto>(chat);
+            }
+            return Ok(chatDto);
         }
 
         [HttpGet("{chatId}/messages")]
@@ -76,7 +90,6 @@ namespace PickMeApp.Web.Controllers
                 totalPages = messagesFromRepo.TotalPages
             };
             Response.Headers.Add("X-Pagination", System.Text.Json.JsonSerializer.Serialize(paginationMetadata));
-
             return Ok(messagesFromRepo);
         }
 

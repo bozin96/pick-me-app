@@ -5,52 +5,71 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { Icon } from 'semantic-ui-react';
-import { newUnreadedMessage } from '../../common/observers';
 import useChat from '../../hooks/useChat';
 import useDebounce from '../../hooks/useDebounce';
+import { usePrevious } from '../../hooks/usePrevious';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
 import {
-    ChatInteface,
+    IChat,
 } from '../../types';
 import './ChatPage.styles.scss';
 import Chat from './components/Chat/Chat.component';
 
 const ChatPage: React.FC = () => {
-    const [chatState, setChatState] = useState<ChatInteface[]>([]);
+    const [chatState, setChatState] = useState<IChat[]>([]);
     const [selectedChat, setSelectedChat] = useState<string>('');
     const [receiverId, setReceiverId] = useState<string>('');
-    const { chatInitialize } = useChat();
-
     const [searchValue, setSearchValue] = useState<string>('');
+
+    const {
+        openChat$, newUnreadedMessage$, newChatRequest$, closeChat$,
+    } = useChat();
     const [value, setValue] = useDebounce<string>(1000, searchValue);
-
-    useEffect(() => {
-    }, [value]);
-
-    useEffect(() => {
-        ApiService.getChats(value || undefined).subscribe((res: ChatInteface[]): void => setChatState(res));
-    }, [value]);
+    // const previousChatId = usePrevious<string>(selectedChat);
 
     const handleChatSelect = (chatId: string, receiverId: string): void => {
-        const selectedChatState = chatState.find((state: ChatInteface) => state.chatId === chatId) as ChatInteface;
-        chatInitialize(chatId, selectedChatState.numberOfUnreadedMessages > 0).subscribe((): void => {
+        const selectedChatState = chatState.find((state: IChat) => state.chatId === chatId) as IChat;
+
+        openChat$(chatId, selectedChatState.numberOfUnreadedMessages > 0).subscribe((): void => {
             setSelectedChat(chatId);
             setReceiverId(receiverId);
-            setChatState((prev: ChatInteface[]) => prev.map((chatState: ChatInteface) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: 0 }) : chatState)));
+            setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: 0 }) : chatState)));
         });
     };
 
-    useEffect(() => {
-        newUnreadedMessage.subscribe((chatId: string) => setChatState((prev: ChatInteface[]) => prev.map((chatState: ChatInteface) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: chatState.numberOfUnreadedMessages + 1 }) : chatState))));
-    }, []);
-
-    const handleSearchInputChange = (e:ChangeEvent<HTMLInputElement>):void => {
+    const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         const { target: { value } } = e;
         setSearchValue(value);
         setValue(value);
     };
+
+    useEffect(() => () => {
+        closeChat$();
+    }, [closeChat$]);
+
+    useEffect(() => {
+        const subscription = newChatRequest$.subscribe((newChat: IChat) => {
+            toast('New Chat Added');
+            setChatState((prev) => ([newChat, ...prev]));
+        });
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [newChatRequest$]);
+
+    useEffect(() => {
+        ApiService.getChats(value || undefined).subscribe((res: IChat[]): void => setChatState(res));
+    }, [value]);
+
+    useEffect(() => {
+        const subscription = newUnreadedMessage$.subscribe((chatId: string) => setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: chatState.numberOfUnreadedMessages + 1 }) : chatState))));
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [newUnreadedMessage$]);
 
     return (
         <div className="pm-chats">

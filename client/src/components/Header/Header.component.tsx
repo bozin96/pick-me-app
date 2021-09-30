@@ -5,7 +5,6 @@ import {
     Header as SemnaticHeader, Icon, Menu,
 } from 'semantic-ui-react';
 import { userInfoSubject } from '../../common/observers';
-import useNotifications from '../../hooks/useNotifications';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
 import { User } from '../../types';
@@ -18,8 +17,6 @@ const Header: React.FC = () => {
 
     const token = CredentialsService.getToken();
     const userId = CredentialsService.getUserId();
-
-    useNotifications(!!token);
 
     useEffect(() => {
         const loadUserData = (): void => {

@@ -1,76 +1,24 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// const URL = `${process.env.REACT_APP_BE_NOT_URL}`;
-import {
-    HttpTransportType, HubConnectionBuilder, LogLevel,
-} from '@microsoft/signalr';
-import { useEffect, useState } from 'react';
-/* eslint-disable max-len */
-import { defer, Observable } from 'rxjs';
-import { newChatMessageSubject, newUnreadedMessage } from '../common/observers';
-import CredentialsService from '../services/Credentials.service';
+import { defer, fromEvent, Observable } from 'rxjs';
+import ChatService from '../services/Chat.service';
 import { ChatMessageSend } from '../types';
 
-const url = process.env.REACT_APP_BE_URL;
-
 export default (): any => {
-    const [connection, setConnection] = useState<any>();
+    const conn = ChatService.connection as any;
 
-    useEffect(() => {
-        const establishConnection = async (): Promise<any> => {
-            const newConnection = new HubConnectionBuilder()
-                .withUrl(`${url}/chats`, {
-                    skipNegotiation: true,
-                    transport: HttpTransportType.WebSockets,
-                    accessTokenFactory: () => CredentialsService.getToken(),
-                })
-                .configureLogging(LogLevel.None)
-                .withAutomaticReconnect()
-                .build();
+    const newChatMessage$ = fromEvent(conn, 'ReceiveMessage');
+    const newChatRequest$ = fromEvent(conn, 'NewChatRequest');
+    const newUnreadedMessage$ = fromEvent(conn, 'ReceiveOtherChatMessage');
 
-            setConnection(newConnection);
-        };
-
-        establishConnection();
-        // add dc
-    }, []);
-
-    useEffect(() => {
-        if (connection) {
-            connection.start()
-                .then((result: any): void => {
-                    connection.on('ReceiveMessage', (message: any): void => {
-                        newChatMessageSubject.next(message);
-                        console.log('ReceiveMessage', message);
-                    });
-                    connection.on('ReceiveOtherChatMessage', (chatId: string) => {
-                        console.log('ReceiveOtherChatMessage', chatId);
-
-                        newUnreadedMessage.next(chatId);
-                    });
-                })
-                .catch((e: any) => console.log('Connection failed: ', e));
-        }
-    }, [connection]);
-
-    const sendMessage = (message: ChatMessageSend): Observable<any> | null => {
-        if (connection.connectionStarted) {
-            return defer(() => connection.send('SendMessage', message));
-        }
-        alert('No connection to server yet.');
-        return null;
-    };
-    const chatInitialize = (chatId: string, HasUnreadedMessages: boolean): Observable<any> | null => {
-        if (connection.connectionStarted) {
-            return defer(() => connection.send('OpenChat', { chatId, HasUnreadedMessages }));
-        }
-
-        alert('No connection to server yet.');
-        return null;
-    };
+    const sendMessage$ = (message: ChatMessageSend): Observable<any> => defer(() => conn.send('SendMessage', message));
+    const openChat$ = (chatId: string, HasUnreadedMessages: boolean): Observable<any> => defer(() => conn.send('OpenChat', { chatId, HasUnreadedMessages }));
+    const closeChat$ = (chatId: string): Observable<any> => defer(() => conn.send('CloseChat', { chatId }));
 
     return {
-        sendMessage,
-        chatInitialize,
+        sendMessage$,
+        newChatMessage$,
+        newUnreadedMessage$,
+        openChat$,
+        closeChat$,
+        newChatRequest$,
     };
 };

@@ -27,14 +27,20 @@ namespace PickMeApp.Web.Hubs
         {
             // Check if the chat is not open to the user to whom the message is being sent.
             bool isChatActive = true;
+            List<string> connections = new List<string>();
 
-            _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
+            _ActiveChats.TryGetValue(request.ReceiverId, out List<ChatViewModel> chats);
             // User is not active
             if (chats == null)
             {
                 isChatActive = false;
             }
-            var connections = chats.Where(c => c.CurrentChat == request.ChatId).Select(c => c.ConnectionId).ToList();
+            else
+                connections = chats
+                    .Where(c => c.CurrentChat == request.ChatId)
+                    .Select(c => c.ConnectionId)
+                    .ToList();
+
             // User is active but chat is not open, send notification.
             if (connections.Count == 0)
             {
@@ -54,7 +60,7 @@ namespace PickMeApp.Web.Hubs
 
             // If chat is active send message.
             if (isChatActive)
-                await Clients.Users(request.ReceiverId)
+                await Clients.Clients(connections)
                     .SendAsync("ReceiveMessage", new
                     {
                         Text = messageFromRepo.Text,
@@ -92,12 +98,12 @@ namespace PickMeApp.Web.Hubs
         }
 
         // samo kad menja page
-        public void CloseChat(CloseChatDto request)
+        public void CloseChat()
         {
             _ActiveChats.TryGetValue(IdentityName, out List<ChatViewModel> chats);
             if (chats != null)
             {
-                chats.RemoveAll(c => c.ConnectionId == Context.ConnectionId && c.CurrentChat == request.ChatId);
+                chats.RemoveAll(c => c.ConnectionId == Context.ConnectionId);
                 _ActiveChats.AddOrUpdate(IdentityName, chats, (IdentityName, chats) => chats);
             }
         }

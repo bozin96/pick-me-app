@@ -95,7 +95,7 @@ export interface MyRideInterface {
     startWaypoint: string
 }
 
-export interface ChatInteface {
+export interface IChat {
     chatId: string,
     firstUserId: string,
     firstUserName: string,
@@ -107,7 +107,7 @@ export interface ChatInteface {
     lastMessageSenderId: number,
 }
 
-export interface ChatMessageInteface {
+export interface IChatMessage {
     chat: string
     chatId: string,
     creationDate: string,

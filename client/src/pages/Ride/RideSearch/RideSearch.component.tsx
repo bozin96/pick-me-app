@@ -19,11 +19,17 @@ const RideSearch: React.FC = () => {
   const [chatInfo, setChatInfo] = useState<any>({});
 
   useEffect(() => {
-    RidesSearchResultsSubject.subscribe((res) => setRidesList(res));
+    const subscription = RidesSearchResultsSubject.subscribe((res) => setRidesList(res));
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
-    RideSearchDataSubject.subscribe((res: any) => setSearchRideInfo(res));
+    const subscription = RideSearchDataSubject.subscribe((res: any) => setSearchRideInfo(res));
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleRideApply = useCallback((rideId: string): void => {

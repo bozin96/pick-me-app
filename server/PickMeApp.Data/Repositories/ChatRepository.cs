@@ -26,7 +26,7 @@ namespace PickMeApp.Application.Repositories
             if (!string.IsNullOrEmpty(userId))
                 collection = collection.Where(e => e.FirstUserId == userId || e.SecondUserId == userId);
 
-            if(!string.IsNullOrEmpty(resourceParameters.SearchQuery))
+            if (!string.IsNullOrEmpty(resourceParameters.SearchQuery))
             {
                 string searchTerm = resourceParameters.SearchQuery.ToLower();
                 collection = collection.Where(e => (e.FirstUserId == userId && (e.SecondUser.FirstName.ToLower().Contains(searchTerm) || e.SecondUser.LastName.ToLower().Contains(searchTerm))) ||
@@ -63,9 +63,14 @@ namespace PickMeApp.Application.Repositories
                 .Where(e => e.ChatId == chatId)
                 .OrderByDescending(e => e.Timestamp);
 
-            return await PagedList<Message>.CreateAsync(collection,
-                    resourceParameters.PageNumber,
-                    resourceParameters.PageSize);
+
+            var count = await collection.CountAsync();
+            var items = await collection
+                .Skip((resourceParameters.PageNumber - 1) * resourceParameters.PageSize)
+                .Take(resourceParameters.PageSize)
+                .OrderBy(e=>e.Timestamp)
+                .ToListAsync();
+            return new PagedList<Message>(items, count, resourceParameters.PageNumber, resourceParameters.PageSize);
         }
 
         public async Task<Chat> CreateChat(string userId1, string userId2)
@@ -80,6 +85,10 @@ namespace PickMeApp.Application.Repositories
 
             await _dbContext.SaveChangesAsync();
 
+            chat = await _dbContext.Chats
+                .Include(c => c.FirstUser)
+                .Include(c => c.SecondUser)
+                .FirstOrDefaultAsync(c => c.Id == chat.Id);
             return chat;
         }
 
