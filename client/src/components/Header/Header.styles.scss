@@ -15,6 +15,7 @@
         outline: none;
         justify-content: space-between;
         min-height: 100px;
+        max-height: 100px;
         > div {
             display: flex;
             justify-content: center;
@@ -28,12 +29,15 @@
                 object-fit: cover;
                 margin-left: 8px;
             }
-            border: none;
-            outline: none;
             a {
+                outline: none;
+                border: none;
                 color: white !important;
                 display: flex;
                 align-items: center;
+            }
+            &::before {
+                background: none;
             }
             &:nth-child(2) {
                 flex: 1;

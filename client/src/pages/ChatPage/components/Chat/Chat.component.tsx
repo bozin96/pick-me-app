@@ -3,7 +3,9 @@ import React, {
     ChangeEvent, useEffect, useRef, useState,
 } from 'react';
 import { map } from 'rxjs';
-import { Button, TextArea } from 'semantic-ui-react';
+import {
+    Button, Dimmer, Loader, Segment, TextArea,
+} from 'semantic-ui-react';
 import ChatMessage from '../../../../components/ChatMessage';
 import useChat from '../../../../hooks/useChat';
 import ApiService from '../../../../services/Api.service';
@@ -13,11 +15,13 @@ import './Chat.styles.scss';
 
 type ChatProps = {
     chatId: string,
-    receiverId: string
+    receiverId: string,
+
 }
 
 const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     const { chatId, receiverId } = props;
+    const [fetchingMessages, setFetchingMessages] = useState(false);
     const [chatMessages, setChatMessages] = useState<IChatMessage[]>([]);
     const [currentMessage, setCurrentMessage] = useState<string>('');
     const [params, setParams] = useState({
@@ -28,24 +32,14 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     const { sendMessage$, newChatMessage$ } = useChat();
 
     const handleOnChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+        // const { tag };
         setCurrentMessage(e.target.value);
     };
+
     const updateScroll = (): void => {
         if (!chatContainer.current) return;
         chatContainer.current.scrollTop = chatContainer.current.scrollHeight;
     };
-
-    useEffect(() => {
-        const fetchMessages = (): void => {
-            ApiService.getChatMessages(chatId, params).subscribe((res: IChatMessage[]): void => {
-                setChatMessages((prev: any) => ([...prev, ...res]
-                ));
-            });
-        };
-        if (chatId) {
-            fetchMessages();
-        }
-    }, [chatId, params]);
 
     const handleSendMessage = (): void => {
         if (!chatId) {
@@ -73,6 +67,35 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     };
 
     useEffect(() => {
+        const fetchMessages = (): void => {
+            setFetchingMessages(true);
+            ApiService.getChatMessages(chatId, params).subscribe((res: IChatMessage[]): void => {
+                setChatMessages((prev: any) => ([...prev, ...res]));
+                setFetchingMessages(false);
+            });
+        };
+        if (chatId) {
+            fetchMessages();
+        }
+    }, [chatId, params]);
+
+    useEffect(() => {
+        if (chatId) {
+            setParams({
+                pageSize: 10,
+                pageNumber: 1,
+            });
+            setChatMessages([]);
+        }
+    }, [chatId]);
+
+    useEffect(() => {
+        if (params.pageSize === 10 && params.pageNumber === 1 && chatMessages.length) {
+                updateScroll();
+        }
+    }, [params, chatMessages]);
+
+    useEffect(() => {
         const subscruption = newChatMessage$.pipe(map((res) => res as IChatMessage)).subscribe(
             (res: IChatMessage) => {
                 setChatMessages((prev: any): any => [...prev, res].sort((a: any, b: any) => {
@@ -91,14 +114,19 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
 
     return (
         <div className="pm-single-chat">
-            <div id="chatHistory" className="pm-single-chat__history" ref={chatContainer}>
-                {chatId && (
-                    <Button onClick={() => setParams((prev: any) => ({ ...prev, pageNumber: prev.pageNumber + 1 }))}>Load More</Button>
-                )}
-                {chatMessages.map((msg: ChatMessageReceive) => (
-                    <ChatMessage right={CredentialsService.getUserId() === msg.sendUserId} text={msg.text} timestamp={msg.timestamp} />
-                ))}
-            </div>
+            <Segment>
+                <div id="chatHistory" className="pm-single-chat__history" ref={chatContainer}>
+                    <Dimmer active={fetchingMessages} inverted>
+                        <Loader inverted>Loading</Loader>
+                    </Dimmer>
+                    {chatId && (
+                        <Button onClick={() => setParams((prev: any) => ({ ...prev, pageNumber: prev.pageNumber + 1 }))}>Load More</Button>
+                    )}
+                    {chatMessages.map((msg: ChatMessageReceive) => (
+                        <ChatMessage right={CredentialsService.getUserId() === msg.sendUserId} text={msg.text} timestamp={msg.timestamp} />
+                    ))}
+                </div>
+            </Segment>
             <div className="pm-single-chat__input-container">
                 <TextArea placeholder="Enter Message" value={currentMessage} name="message" onChange={handleOnChange} />
                 <Button type="click" onClick={handleSendMessage}>Send</Button>

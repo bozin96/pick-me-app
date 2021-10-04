@@ -10,7 +10,7 @@ export default (): any => {
     const newUnreadedMessage$ = fromEvent(conn, 'ReceiveOtherChatMessage');
 
     const sendMessage$ = (message: ChatMessageSend): Observable<any> => defer(() => conn.send('SendMessage', message));
-    const openChat$ = (chatId: string, HasUnreadedMessages: boolean): Observable<any> => defer(() => conn.send('OpenChat', { chatId, HasUnreadedMessages }));
+    const openChat$ = (chatId: string, HasUnreadedMessages: boolean, prevChatId:string): Observable<any> => defer(() => conn.send('OpenChat', { chatId, prevChatId, HasUnreadedMessages }));
     const closeChat$ = (chatId: string): Observable<any> => defer(() => conn.send('CloseChat', { chatId }));
 
     return {

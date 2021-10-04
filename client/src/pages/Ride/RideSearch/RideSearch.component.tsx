@@ -1,10 +1,12 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-no-undef */
+import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { List } from 'semantic-ui-react';
+import { Icon, Label, List } from 'semantic-ui-react';
 import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../../common/observers';
 import Ride from '../../../components/Ride';
 import ApiService from '../../../services/Api.service';
@@ -17,6 +19,7 @@ const RideSearch: React.FC = () => {
   const [ridesList, setRidesList] = useState<any>([]);
   const [searchRideInfo, setSearchRideInfo] = useState({});
   const [chatInfo, setChatInfo] = useState<any>({});
+  const [hideChat, setHideChat] = useState(false);
 
   useEffect(() => {
     const subscription = RidesSearchResultsSubject.subscribe((res) => setRidesList(res));
@@ -42,6 +45,10 @@ const RideSearch: React.FC = () => {
     ApiService.getOrCreateChat(userId).subscribe((res: any) => setChatInfo({ ...res, receiverId: userId }));
   };
 
+  const chatClasses = classNames(({
+    'pm-collapsible-chat': true,
+    'pm-collapsible-chat--collapsed': hideChat,
+  }));
   return (
     <div className={baseClass}>
       <h2>Search Results</h2>
@@ -49,12 +56,22 @@ const RideSearch: React.FC = () => {
 
         <RideSearchForm />
         <List divided className="pm-rides-list">
-          {ridesList.map((ride: MyDriveInterface) => (
-            <Ride ride={ride} onApply={handleRideApply} onChatClick={handleChatClick} />
-          ))}
+          {!ridesList.length ? (
+            <Label content="No Rides To Show" />
+          ) : (
+            ridesList.map((ride: MyDriveInterface) => (
+              <Ride ride={ride} onApply={handleRideApply} onChatClick={handleChatClick} />
+            ))
+          )}
 
         </List>
-        {chatInfo.chatId && <Chat chatId={chatInfo.chatId} receiverId={chatInfo.receiverId} />}
+        {chatInfo.chatId
+          && (
+            <div className={chatClasses}>
+              <Icon name="caret square right" size="big" onClick={() => setHideChat((prev) => !prev)} />
+              <Chat chatId={chatInfo.chatId} receiverId={chatInfo.receiverId} />
+            </div>
+          )}
       </div>
     </div>
   );

@@ -83,6 +83,11 @@ export interface ChatMessageReceive {
     sendUserId: string;
     timestamp: string
 }
+export interface OtherChatMessageReceive {
+    text: string;
+    sendUserId: string;
+    chatId: string
+}
 
 export interface MyRideInterface {
     driverName: string,

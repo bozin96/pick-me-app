@@ -14,6 +14,7 @@ import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
 import {
     IChat,
+    OtherChatMessageReceive,
 } from '../../types';
 import './ChatPage.styles.scss';
 import Chat from './components/Chat/Chat.component';
@@ -28,12 +29,12 @@ const ChatPage: React.FC = () => {
         openChat$, newUnreadedMessage$, newChatRequest$, closeChat$,
     } = useChat();
     const [value, setValue] = useDebounce<string>(1000, searchValue);
-    // const previousChatId = usePrevious<string>(selectedChat);
+    const previousChatId = usePrevious<string>(selectedChat);
 
     const handleChatSelect = (chatId: string, receiverId: string): void => {
         const selectedChatState = chatState.find((state: IChat) => state.chatId === chatId) as IChat;
 
-        openChat$(chatId, selectedChatState.numberOfUnreadedMessages > 0).subscribe((): void => {
+        openChat$(chatId, selectedChatState.numberOfUnreadedMessages > 0, previousChatId).subscribe((): void => {
             setSelectedChat(chatId);
             setReceiverId(receiverId);
             setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: 0 }) : chatState)));
@@ -65,7 +66,13 @@ const ChatPage: React.FC = () => {
     }, [value]);
 
     useEffect(() => {
-        const subscription = newUnreadedMessage$.subscribe((chatId: string) => setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatId ? ({ ...chatState, numberOfUnreadedMessages: chatState.numberOfUnreadedMessages + 1 }) : chatState))));
+        const subscription = newUnreadedMessage$.subscribe((chatInfo:OtherChatMessageReceive) => {
+            toast.success('New Message Received');
+            const { chatId: chatIdToUpdate } = chatInfo;
+            setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatIdToUpdate
+                ? ({ ...chatState, numberOfUnreadedMessages: chatState.numberOfUnreadedMessages + 1 })
+                : chatState)));
+        });
         return () => {
             subscription.unsubscribe();
         };
@@ -92,7 +99,7 @@ const ChatPage: React.FC = () => {
                                     <span>
                                         {isTargetUserFirst ? firstUserName : secondUserName}
                                     </span>
-                                    {(numberOfUnreadedMessages > 0 && lastMessageSenderId !== CredentialsService.getUserId()) && <Icon name="mail" />}
+                                    {numberOfUnreadedMessages > 0 && lastMessageSenderId !== CredentialsService.getUserId() && <Icon name="mail" />}
                                 </div>
                             </div>
                         );

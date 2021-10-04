@@ -48,6 +48,8 @@ namespace PickMeApp.Web.Hubs
                 await Clients.Users(request.ReceiverId)
                     .SendAsync("ReceiveOtherChatMessage", new
                     {
+                        Text = request.Text,
+                        SenderId = IdentityName,
                         ChatId = request.ChatId
                     });
             }
