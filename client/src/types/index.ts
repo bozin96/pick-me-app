@@ -1,3 +1,11 @@
+import { RouteComponentProps, RouteProps } from 'react-router';
+
+export type EnhancedRouteProps = {
+    componentProps?: Record<string, any>;
+    authorized?:boolean,
+  } & RouteProps<string> &
+    RouteComponentProps;
+
 export interface RouteLeg {
     startLongitude: number,
     startLatitude: number,

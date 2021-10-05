@@ -9,23 +9,23 @@ import {
     Button,
     Card,
     Dimmer,
-    Form,
-    Header,
-    Icon,
+    Form, Icon,
     Image,
 } from 'semantic-ui-react';
-import { userInfoSubject } from '../../common/observers';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
-import { User } from '../../types';
+import { setUserData } from '../../store/reducers/auth.reducer';
 import './UserProfilePage.styles.scss';
 
 const UserProfilePage: React.FC = () => {
-    const [userInfo, setUserInfo] = useState<User>();
-    const [fetchinInfo, setFetchingInfo] = useState<boolean>(true);
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
     const { id } = useParams() as any;
     const [editMode, setEditMode] = useState(false);
+    const dispatch = useAppDispatch();
+    const { userData } = useAppSelector((state) => state.auth);
+
     const [formState, setFormState] = useState<any>({
         firstName: '',
         middleName: '',
@@ -34,45 +34,8 @@ const UserProfilePage: React.FC = () => {
     });
 
     useEffect(() => {
-        const loadUserData = (): void => {
-            setFetchingInfo(true);
-            ApiService.getUser$(id).subscribe({
-                next(res: User) {
-                    const {
-                        firstName,
-                        lastName,
-                        middleName,
-                        userPhoto,
-                        email,
-                        averageRate,
-                        numberOfRates,
-                    } = res;
-                    const data = {
-                        firstName,
-                        lastName,
-                        middleName,
-                        email,
-                        averageRate,
-                        numberOfRates,
-                        userPhoto: userPhoto
-                            ? `data:image/png;base64,${userPhoto}`
-                            : 'https://react.semantic-ui.com/images/wireframe/image.png',
-                    } as User;
-
-                    setUserInfo(data);
-                    setFormState(data);
-                    setFetchingInfo(false);
-                },
-                error(err) {
-                    toast.error('Error Fetching User Info');
-                    setFetchingInfo(false);
-                },
-            });
-        };
-        if (id) {
-            loadUserData();
-        }
-    }, [id]);
+        if (JSON.stringify(userData) !== '{}') setFormState(userData);
+    }, [userData]);
 
     const isMe = id === CredentialsService.getUserId();
 
@@ -94,7 +57,7 @@ const UserProfilePage: React.FC = () => {
 
     const handleFormReset = (): void => {
         setEditMode(false);
-        setFormState(userInfo);
+        setFormState(userData);
     };
     const handleOnSubmit = (): void => {
         const { userPhoto } = formState;
@@ -105,10 +68,9 @@ const UserProfilePage: React.FC = () => {
         setFormSubmitting(true);
         ApiService.updateUser$(id, submitObject).subscribe({
             next() {
-                userInfoSubject.next(formState);
                 setEditMode(false);
                 setFormSubmitting(false);
-                setUserInfo(formState);
+                dispatch(setUserData(formState));
             },
             error() {
                 toast('Error Occured');
@@ -124,7 +86,7 @@ const UserProfilePage: React.FC = () => {
     return (
         <div className="pm-user-profile">
             <Form onSubmit={handleOnSubmit}>
-                <Dimmer.Dimmable as={Card} dimmed={fetchinInfo}>
+                <Dimmer.Dimmable as={Card}>
                     <Image src={formState.userPhoto} ui={false} />
                     {editMode && (
                         <>
@@ -173,23 +135,23 @@ const UserProfilePage: React.FC = () => {
                                 </>
                             ) : (
                                 <>
-                                    {userInfo?.firstName}
+                                    {userData?.firstName}
                                     &nbsp;
-                                    {userInfo?.middleName}
+                                    {userData?.middleName}
                                     &nbsp;
-                                    {userInfo?.lastName}
+                                    {userData?.lastName}
                                 </>
                             )}
                         </Card.Header>
                         {!editMode && (
-                            <Card.Description>{userInfo?.email}</Card.Description>
+                            <Card.Description>{userData?.email}</Card.Description>
                         )}
                     </Card.Content>
                     {!editMode && (
                         <Card.Content extra>
-                            {`${userInfo?.averageRate} / 5`}
+                            {`${userData?.averageRate} / 5`}
                             <Icon name="star" />
-                            {` from ${userInfo?.numberOfRates} rates`}
+                            {` from ${userData?.numberOfRates} rates`}
                         </Card.Content>
                     )}
                     {isMe && (
@@ -208,11 +170,6 @@ const UserProfilePage: React.FC = () => {
                             )}
                         </Card.Content>
                     )}
-                    <Dimmer active={fetchinInfo}>
-                        <Header as="h2" inverted>
-                            Fetching User Info ...
-                        </Header>
-                    </Dimmer>
                 </Dimmer.Dimmable>
             </Form>
         </div>

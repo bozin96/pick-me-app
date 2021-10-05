@@ -4,15 +4,15 @@ import CredentialsService from './Credentials.service';
 
 const url = process.env.REACT_APP_BE_URL;
 
-class SingnalRService {
+class NotificationService {
     static connection: any = null
 
-    get connection(): HubConnectionBuilder { return SingnalRService.connection; }
+    get connection(): HubConnectionBuilder { return NotificationService.connection; }
 
-    set connection(val: HubConnectionBuilder) { SingnalRService.connection = val; }
+    set connection(val: HubConnectionBuilder) { NotificationService.connection = val; }
 
     constructor() {
-        SingnalRService.connection = new HubConnectionBuilder().withUrl(`${url}/notifications`, {
+        NotificationService.connection = new HubConnectionBuilder().withUrl(`${url}/notifications`, {
             skipNegotiation: true,
             transport: HttpTransportType.WebSockets,
             accessTokenFactory: () => CredentialsService.getToken(),
@@ -21,7 +21,7 @@ class SingnalRService {
             .withAutomaticReconnect()
             .build();
 
-        SingnalRService.connection
+        NotificationService.connection
             .start()
             .then(() => {
                 console.log('Connection started');
@@ -30,4 +30,4 @@ class SingnalRService {
     }
 }
 
-export default new SingnalRService();
+export default new NotificationService();

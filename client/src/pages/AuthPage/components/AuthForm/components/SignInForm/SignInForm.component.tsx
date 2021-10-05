@@ -1,21 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
     Button, Form, Header, Message,
 } from 'semantic-ui-react';
 import history from '../../../../../../common/history';
+import { useAppDispatch } from '../../../../../../hooks/useAppDispatch';
 import ApiService from '../../../../../../services/Api.service';
 import CredentialsService from '../../../../../../services/Credentials.service';
-import { AuthApiResponse, UserRegisterInteface } from '../../../../../../types';
+import { setToken, setUserId } from '../../../../../../store/reducers/auth.reducer';
+import { AuthApiResponse, UserLoginInteface } from '../../../../../../types';
 
-const SignUpForm: React.FC = (props) => {
-    const [formState, setFormState] = useState<UserRegisterInteface>({
-        firstName: '',
-        middleName: '',
-        lastName: '',
+const SignInForm: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const [formState, setFormState] = useState<UserLoginInteface>({
+        username: '',
         password: '',
-        confirmPassword: '',
     });
-    const [formError, setFormError] = useState<string | undefined>();
+    const [formError, setFormError] = useState<string>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const handleOnChange = useCallback((e) => setFormState((prev) => ({
@@ -25,10 +25,11 @@ const SignUpForm: React.FC = (props) => {
 
     const handleOnSubmit = (): void => {
         setIsSubmitting(true);
-
-        ApiService.register$(formState).subscribe({
+        ApiService.login$(formState).subscribe({
             next(data: AuthApiResponse) {
                 const { token, userId } = data;
+                dispatch(setToken(token));
+                dispatch(setUserId(userId));
                 CredentialsService.setToken(token);
                 CredentialsService.setUserId(userId);
                 history.push('/dashboard');
@@ -44,34 +45,24 @@ const SignUpForm: React.FC = (props) => {
                         errorMessage = errorData?.error || errorData?.title;
                     }
                 } else {
-                    errorMessage = 'Error occured while creating Legal Entity';
+                    errorMessage = 'Error occured';
                 }
+
                 setFormError(errorMessage);
                 setIsSubmitting(false);
             },
-
             complete() {
                 setIsSubmitting(false);
             },
         });
     };
-
-    useEffect(() => {
-        if (formError) {
-            setFormError(undefined);
-        }
-    }, [formState, formError]);
-
     return (
         <Form onSubmit={handleOnSubmit}>
-            <Header as="h2">Sign Up</Header>
-            <Form.Input onChange={handleOnChange} fluid label="First Name" placeholder="First name" name="firstName" />
-            <Form.Input onChange={handleOnChange} fluid label="Middle Name" placeholder="Middle name" name="middleName" />
-            <Form.Input onChange={handleOnChange} fluid label="Last Name" placeholder="Last name" name="lastName" />
-            <Form.Input onChange={handleOnChange} fluid label="Email" placeholder="Email" type="email" name="email" />
+            <Header as="h2">Sign In</Header>
+            <Form.Input onChange={handleOnChange} fluid label="Username" placeholder="Username" name="username" />
             <Form.Input onChange={handleOnChange} fluid label="Password" placeholder="Password" name="password" />
-            <Form.Input onChange={handleOnChange} fluid label="Confirm Password" placeholder="Confirm Password" name="confirmPassword" />
-            <Button type="submit" loading={isSubmitting}>Sign Up</Button>
+            <Button type="submit" loading={isSubmitting}>Sign In</Button>
+
             {formError && (
                 <Message
                     negative
@@ -82,5 +73,4 @@ const SignUpForm: React.FC = (props) => {
         </Form>
     );
 };
-
-export default SignUpForm;
+export default SignInForm;

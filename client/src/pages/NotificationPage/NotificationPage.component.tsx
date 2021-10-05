@@ -12,14 +12,12 @@ import './NotificationPage.styles.scss';
 const NotificationPage: React.FC = () => {
     const [notifications, setNotificaitons] = useState<Notification[]>([]);
 
-    const newNotificationObserver$ = useNotifications();
+    const newNotificationObserver$ = useNotifications(true);
 
     useEffect(() => {
-        const subscription = newNotificationObserver$.subscribe((res) => setNotificaitons(((prev) => ([res, ...prev]))));
-
-        return () => {
-            subscription.unsubscribe();
-        };
+        if (newNotificationObserver$) {
+            newNotificationObserver$.subscribe((res) => setNotificaitons(((prev) => ([res, ...prev]))));
+        }
     }, [newNotificationObserver$]);
 
     useEffect(() => {

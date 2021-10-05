@@ -1,66 +1,23 @@
-import ChatPage from '../pages/ChatPage';
-import DashboardPage from '../pages/DashboardPage';
-import HomePage from '../pages/HomePage';
-import NotificationPage from '../pages/NotificationPage';
-import RideFormPage from '../pages/RideFormPage';
-import RideSearchPage from '../pages/RideSearchPage';
-import UserProfilePage from '../pages/UserProfilePage';
+import AuthPage from '../pages/AuthPage';
 import redirect from './modules/redirect';
+import PrivateSubrouter from './subrouter/Private/Private.subrouter';
 
 export default [
   {
-    path: '/not-found',
-    component: (): string => 'not found',
+    path: '/',
+    component: redirect('/auth', true),
+    authorized: false,
   },
   {
     path: '/auth',
     authorized: false,
-    component: HomePage,
+    component: AuthPage,
     exact: false,
   },
   {
-    path: '/create-ride',
-    component: RideFormPage,
-    exact: false,
-  },
-  {
-    path: '/ride-search',
-    component: RideSearchPage,
+    path: '/',
+    component: PrivateSubrouter,
     exact: false,
     authorized: true,
-
-  },
-  {
-    path: '/dashboard',
-    component: DashboardPage,
-    exact: false,
-    authorized: true,
-
-  },
-  {
-    path: '/notifications',
-    component: NotificationPage,
-    exact: false,
-    authorized: true,
-
-  },
-  {
-    path: '/user-profile/:id',
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    component: UserProfilePage,
-    authorized: true,
-    exact: true,
-
-  },
-  {
-    path: '/chats',
-    component: ChatPage,
-    exact: false,
-    authorized: true,
-
-  },
-  {
-    path: '*',
-    component: redirect('/auth', true),
   },
 ];

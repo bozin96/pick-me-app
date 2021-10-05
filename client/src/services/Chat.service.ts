@@ -1,18 +1,19 @@
+/* eslint-disable no-console */
 /* eslint-disable class-methods-use-this */
 import { HttpTransportType, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import CredentialsService from './Credentials.service';
 
 const url = process.env.REACT_APP_BE_URL;
 
-class SingnalRService {
+class ChatService {
     static connection: any = null
 
-    get connection(): HubConnectionBuilder { return SingnalRService.connection; }
+    get connection(): HubConnectionBuilder { return ChatService.connection; }
 
-    set connection(val: HubConnectionBuilder) { SingnalRService.connection = val; }
+    set connection(val: HubConnectionBuilder) { ChatService.connection = val; }
 
     constructor() {
-        SingnalRService.connection = new HubConnectionBuilder().withUrl(`${url}/chats`, {
+        ChatService.connection = new HubConnectionBuilder().withUrl(`${url}/chats`, {
             skipNegotiation: true,
             transport: HttpTransportType.WebSockets,
             accessTokenFactory: () => CredentialsService.getToken(),
@@ -21,7 +22,9 @@ class SingnalRService {
             .withAutomaticReconnect()
             .build();
 
-        SingnalRService.connection
+        // await ChatService.connection.StartAsync();
+
+        ChatService.connection
             .start()
             .then(() => {
                 console.log('Connection started');
@@ -30,4 +33,4 @@ class SingnalRService {
     }
 }
 
-export default new SingnalRService();
+export default new ChatService();

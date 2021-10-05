@@ -158,6 +158,7 @@ namespace PickMeApp.Web.Controllers
             {
                 Forbid();
             }
+            resourceParameters.PassengerId = userId;
 
             if (!_propertyMappingService.ValidMappingExistsFor<PassengerOnRideDto, PassengerOnRide>(resourceParameters.OrderBy))
             {

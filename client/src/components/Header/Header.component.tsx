@@ -1,47 +1,49 @@
+/* eslint-disable max-len */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import {
     Header as SemnaticHeader, Icon, Menu,
 } from 'semantic-ui-react';
-import { userInfoSubject } from '../../common/observers';
-import ApiService from '../../services/Api.service';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import useNotifications from '../../hooks/useNotifications';
 import CredentialsService from '../../services/Credentials.service';
-import { User } from '../../types';
+import { clearAuth } from '../../store/reducers/auth.reducer';
+import ToastMessage from '../ToastMessage';
 import './Header.styles.scss';
 
 const Header: React.FC = () => {
-    const [userName, setUserName] = useState<string>('');
-    const [userPhoto, setUserPhoto] = useState<string | null>('');
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+    const newNotificationObserver$ = useNotifications(isAuthorized);
 
-    const token = CredentialsService.getToken();
-    const userId = CredentialsService.getUserId();
-
-    useEffect(() => {
-        const loadUserData = (): void => {
-            ApiService.getUser$(userId).subscribe((res: User): void => {
-                const { userPhoto: photo, firstName, lastName } = res;
-                setUserName(`${firstName} ${lastName}`);
-                setUserPhoto(`data:image/png;base64,${photo}`);
-            });
-        };
-        if (userId) {
-            loadUserData();
-        }
-    }, [userId]);
-
-    useEffect(() => {
-        userInfoSubject.subscribe((res: Partial<User>) => {
-            const { userPhoto: photo = '', firstName, lastName } = res;
-            setUserName(`${firstName} ${lastName}`);
-            setUserPhoto(photo || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png');
-        });
-    }, []);
+    const {
+        token, userData: {
+            userPhoto, firstName, lastName,
+        },
+        userId,
+    } = useAppSelector((state) => state.auth);
 
     useEffect(() => {
         setIsAuthorized(!!token && !!userId);
     }, [token, userId]);
+
+    const displayNotificationAsToast = (notification: Notification): void => {
+        toast(ToastMessage, { data: notification });
+    };
+    useEffect(() => {
+        let subscripton: any = null;
+        if (newNotificationObserver$) {
+            subscripton = newNotificationObserver$.subscribe((res) => displayNotificationAsToast(res));
+        }
+        return (() => {
+            if (subscripton) {
+                subscripton.unsubscribe();
+            }
+        });
+    }, [newNotificationObserver$]);
 
     return (
         <SemnaticHeader className="pm-header">
@@ -92,7 +94,7 @@ const Header: React.FC = () => {
                             <NavLink
                                 to={`/user-profile/${CredentialsService.getUserId()}`}
                             >
-                                {userName}
+                                {`${firstName} ${lastName}`}
                                 {userPhoto && (
                                     <img alt="" src={userPhoto} />
                                 )}
@@ -103,6 +105,7 @@ const Header: React.FC = () => {
                                 to="/auth"
                                 onClick={() => {
                                     CredentialsService.clearLocalStorage();
+                                    dispatch(clearAuth());
                                 }}
                             >
                                 <Icon name="sign-in" />

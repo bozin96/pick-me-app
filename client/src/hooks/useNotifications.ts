@@ -1,23 +1,31 @@
-import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 /* eslint-disable max-len */
 import {
-    fromEvent, map, merge, Observable, tap,
+    fromEvent, map, merge, Observable,
 } from 'rxjs';
-import ToastMessage from '../components/ToastMessage';
 import NotificationService from '../services/Notification.service';
+import { Notification } from '../types/index';
 
-export default (): Observable<any> => {
+export default (shouldStart = false): Observable<any> | undefined => {
     const conn = NotificationService.connection as any;
-    const RequestForRide$ = fromEvent(conn, 'RequestForRide');
-    const ResponseOnRideRequest$ = fromEvent(conn, 'ResponseOnRideRequest');
-    const RideReview$ = fromEvent(conn, 'RideReview');
+    const [RequestForRide$, setRequestForRide] = useState<Observable<Notification>>(new Observable());
+    const [ResponseOnRideRequest$, setResponseOnRideRequest] = useState<Observable<Notification>>(new Observable());
+    const [RideReview$, setRideReview] = useState<Observable<Notification>>(new Observable());
 
-    const displayNotificationAsToast = (notification: Notification): void => {
-        toast(ToastMessage, { data: notification });
-    };
+    useEffect(() => {
+        const setUpListeners = (): void => {
+            setRequestForRide(fromEvent(conn, 'RequestForRide'));
+            setResponseOnRideRequest(fromEvent(conn, 'ResponseOnRideRequest'));
+            setRideReview(fromEvent(conn, 'RideReview'));
+        };
+        if (shouldStart && conn.connectionState === 'Connected') {
+            setUpListeners();
+        }
+    }, [conn, shouldStart]);
+
     return merge(
-        RequestForRide$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
-        ResponseOnRideRequest$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
-        RideReview$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
-    ) as Observable<Notification>;
+        RequestForRide$,
+        ResponseOnRideRequest$,
+        RideReview$,
+    ).pipe(map((res) => res as Notification)) as Observable<Notification>;
 };
