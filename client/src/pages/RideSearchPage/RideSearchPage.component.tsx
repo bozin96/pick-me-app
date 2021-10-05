@@ -7,15 +7,15 @@ import classNames from 'classnames';
 import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Icon, Label, List } from 'semantic-ui-react';
-import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../../common/observers';
-import Ride from '../../../components/Ride';
-import ApiService from '../../../services/Api.service';
-import { MyDriveInterface } from '../../../types';
-import Chat from '../../ChatPage/components/Chat/Chat.component';
+import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../common/observers';
+import Ride from '../../components/Ride';
+import ApiService from '../../services/Api.service';
+import { MyDriveInterface } from '../../types';
+import Chat from '../ChatPage/components/Chat/Chat.component';
 import RideSearchForm from './components/RideSearchForm';
-import './RideSearch.styles.scss';
+import './RideSearchPage.styles.scss';
 
-const RideSearch: React.FC = () => {
+const RideSearchPage: React.FC = () => {
   const [ridesList, setRidesList] = useState<any>([]);
   const [searchRideInfo, setSearchRideInfo] = useState({});
   const [chatInfo, setChatInfo] = useState<any>({});
@@ -77,4 +77,4 @@ const RideSearch: React.FC = () => {
   );
 };
 
-export default RideSearch;
+export default RideSearchPage;

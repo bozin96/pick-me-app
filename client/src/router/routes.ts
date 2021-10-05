@@ -1,45 +1,45 @@
 import ChatPage from '../pages/ChatPage';
-import Dashboard from '../pages/Dashboard';
-import Home from '../pages/Home';
-import Notifications from '../pages/Notifications';
-import RideForm from '../pages/Ride/RideForm';
-import RideSearch from '../pages/Ride/RideSearch';
-import UserProfile from '../pages/UserProfile';
+import DashboardPage from '../pages/DashboardPage';
+import HomePage from '../pages/HomePage';
+import NotificationPage from '../pages/NotificationPage';
+import RideFormPage from '../pages/RideFormPage';
+import RideSearchPage from '../pages/RideSearchPage';
+import UserProfilePage from '../pages/UserProfilePage';
 import redirect from './modules/redirect';
 
 export default [
   {
     path: '/not-found',
-    component: ():string => 'not found',
+    component: (): string => 'not found',
   },
   {
     path: '/auth',
     authorized: false,
-    component: Home,
+    component: HomePage,
     exact: false,
   },
   {
     path: '/create-ride',
-    component: RideForm,
+    component: RideFormPage,
     exact: false,
   },
   {
     path: '/ride-search',
-    component: RideSearch,
+    component: RideSearchPage,
     exact: false,
     authorized: true,
 
   },
   {
     path: '/dashboard',
-    component: Dashboard,
+    component: DashboardPage,
     exact: false,
     authorized: true,
 
   },
   {
     path: '/notifications',
-    component: Notifications,
+    component: NotificationPage,
     exact: false,
     authorized: true,
 
@@ -47,7 +47,7 @@ export default [
   {
     path: '/user-profile/:id',
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    component: UserProfile,
+    component: UserProfilePage,
     authorized: true,
     exact: true,
 

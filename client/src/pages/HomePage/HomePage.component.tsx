@@ -1,8 +1,8 @@
 import React from 'react';
 import AuthForm from './components/AuthForm';
-import './Home.styles.scss';
+import './HomePage.styles.scss';
 
-const Home: React.FC = () => {
+const HomePage: React.FC = () => {
     const baseClass = 'pm-home';
     return (
         <div className={baseClass}>
@@ -11,4 +11,4 @@ const Home: React.FC = () => {
     );
 };
 
-export default Home;
+export default HomePage;

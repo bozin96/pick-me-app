@@ -2,9 +2,9 @@ import React from 'react';
 import { Grid } from 'semantic-ui-react';
 import DrivesHistoryCard from '../../components/DrivesHistoryCard';
 import RidesHistoryCard from '../../components/RidesHistoryCard';
-import './Dashboard.styles.scss';
+import './DashboardPage.styles.scss';
 
-const Dashboard: React.FC = () => (
+const DashboardPage: React.FC = () => (
     <Grid divided columns="2" className="pm-dashboard">
         <Grid.Row>
             <Grid.Column>
@@ -19,4 +19,4 @@ const Dashboard: React.FC = () => (
     </Grid>
 );
 
-export default Dashboard;
+export default DashboardPage;

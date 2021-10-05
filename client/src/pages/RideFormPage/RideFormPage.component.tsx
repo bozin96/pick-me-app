@@ -7,14 +7,14 @@ import React, {
 import { toast } from 'react-toastify';
 import { map as mapRxjs } from 'rxjs';
 import { Button, Form } from 'semantic-ui-react';
-import history from '../../../common/history';
-import { waypointsSubject } from '../../../common/observers';
-import useMap from '../../../hooks/useMap';
-import ApiService from '../../../services/Api.service';
-import { Microsoft } from '../../../services/Map.service';
-import './RideForm.styles.scss';
+import history from '../../common/history';
+import { waypointsSubject } from '../../common/observers';
+import useMap from '../../hooks/useMap';
+import ApiService from '../../services/Api.service';
+import { Microsoft } from '../../services/Map.service';
+import './RideFormPage.styles.scss';
 
-const RideForm: React.FC<any> = () => {
+const RideFormPage: React.FC<any> = () => {
     const [formSubmitting, setFormSubmitting] = useState(false);
     const [formState, setFormState] = useState<any>({
         destinations: [{
@@ -232,4 +232,4 @@ const RideForm: React.FC<any> = () => {
     );
 };
 
-export default RideForm;
+export default RideFormPage;

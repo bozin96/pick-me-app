@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { Button, Form, Header } from 'semantic-ui-react';
-import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../../../../common/observers';
-import useMap from '../../../../../hooks/useMap';
-import ApiService from '../../../../../services/Api.service';
+import { RideSearchDataSubject, RidesSearchResultsSubject } from '../../../../common/observers';
+import useMap from '../../../../hooks/useMap';
+import ApiService from '../../../../services/Api.service';
 import './RideSearchForm.styles.scss';
 
 const RideSearchForm: React.FC = () => {

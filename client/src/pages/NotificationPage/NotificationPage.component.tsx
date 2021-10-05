@@ -7,9 +7,9 @@ import useNotifications from '../../hooks/useNotifications';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
 import { Notification } from '../../types';
-import './Notifications.styles.scss';
+import './NotificationPage.styles.scss';
 
-const Notifications: React.FC = () => {
+const NotificationPage: React.FC = () => {
     const [notifications, setNotificaitons] = useState<Notification[]>([]);
 
     const newNotificationObserver$ = useNotifications();
@@ -45,4 +45,4 @@ const Notifications: React.FC = () => {
     );
 };
 
-export default Notifications;
+export default NotificationPage;

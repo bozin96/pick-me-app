@@ -18,9 +18,9 @@ import { userInfoSubject } from '../../common/observers';
 import ApiService from '../../services/Api.service';
 import CredentialsService from '../../services/Credentials.service';
 import { User } from '../../types';
-import './UserProfile.styles.scss';
+import './UserProfilePage.styles.scss';
 
-const UserProfile: React.FC = () => {
+const UserProfilePage: React.FC = () => {
     const [userInfo, setUserInfo] = useState<User>();
     const [fetchinInfo, setFetchingInfo] = useState<boolean>(true);
     const [formSubmitting, setFormSubmitting] = useState<boolean>(false);
@@ -218,4 +218,4 @@ const UserProfile: React.FC = () => {
         </div>
     );
 };
-export default UserProfile;
+export default UserProfilePage;

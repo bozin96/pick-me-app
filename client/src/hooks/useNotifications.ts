@@ -16,7 +16,7 @@ export default (): Observable<any> => {
         toast(ToastMessage, { data: notification });
     };
     return merge(
-        RequestForRide$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res))),
+        RequestForRide$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
         ResponseOnRideRequest$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
         RideReview$.pipe(map((res) => res as Notification), tap((res) => displayNotificationAsToast(res as Notification))),
     ) as Observable<Notification>;
