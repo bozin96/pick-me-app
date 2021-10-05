@@ -14,10 +14,8 @@ const Ride: React.FC = () => {
                     showTrafficButton: true,
                     credentials:
                         'AsrEpVFLl4bpmG5EUAggr91gdwpbwDfzb74vFXC_bFmAeTWSQnINDulRiswel16H',
-
                 }}
             />
-
         </div>
     );
 };

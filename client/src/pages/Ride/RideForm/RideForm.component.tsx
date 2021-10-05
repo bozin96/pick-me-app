@@ -176,7 +176,7 @@ const RideForm: React.FC<any> = () => {
             }),
         };
         setFormSubmitting(true);
-        ApiService.createRide(submitObject).subscribe({
+        ApiService.createRide$(submitObject).subscribe({
             next(x) {
                 toast('Ride Created Succesfully');
                 setFormSubmitting(false);
@@ -222,7 +222,6 @@ const RideForm: React.FC<any> = () => {
                     {options.map((opt: any, index: number) => (
                         <div className={`${baseClass}__options__item`}>
                             <Form.Input placeholder="Price" name="price" icon="dollar sign" iconPosition="left" onChange={(e: any) => handleOptionsChange(e, index)} />
-
                         </div>
                     ))}
                 </div>

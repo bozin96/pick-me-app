@@ -36,13 +36,13 @@ const RideSearch: React.FC = () => {
   }, []);
 
   const handleRideApply = useCallback((rideId: string): void => {
-    ApiService.requestRide(rideId, searchRideInfo).subscribe(() => toast('Ride Applied Successfully'));
+    ApiService.requestRide$(rideId, searchRideInfo).subscribe(() => toast('Ride Applied Successfully'));
   }, [searchRideInfo]);
 
   const baseClass = 'pm-ride-search';
 
   const handleChatClick = (userId: string): void => {
-    ApiService.getOrCreateChat(userId).subscribe((res: any) => setChatInfo({ ...res, receiverId: userId }));
+    ApiService.getOrCreateChat$(userId).subscribe((res: any) => setChatInfo({ ...res, receiverId: userId }));
   };
 
   const chatClasses = classNames(({

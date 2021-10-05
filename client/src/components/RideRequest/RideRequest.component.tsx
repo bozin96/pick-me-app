@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable react/no-unused-prop-types */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Button, Card } from 'semantic-ui-react';
 import ApiService from '../../services/Api.service';
@@ -14,13 +14,13 @@ const RideRequest: React.FC<RideRequestNotificationInterface> = (props: RideRequ
     } = props;
 
     const declineRideRequest = useCallback(() => {
-        ApiService.reviewRideRequest(rideId, { notificationId: id, accepted: false }).subscribe(() => {
+        ApiService.reviewRideRequest$(rideId, { notificationId: id, accepted: false }).subscribe(() => {
             toast('Succesfully Declined Ride');
         });
     }, [id, rideId]);
 
     const approveRideRequest = useCallback(() => {
-        ApiService.reviewRideRequest(rideId, { notificationId: id, accepted: true }).subscribe(() => {
+        ApiService.reviewRideRequest$(rideId, { notificationId: id, accepted: true }).subscribe(() => {
             toast('Succesfully Approved Ride');
         });
     }, [id, rideId]);

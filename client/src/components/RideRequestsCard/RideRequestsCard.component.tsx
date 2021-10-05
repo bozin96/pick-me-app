@@ -12,8 +12,7 @@ const RideRequestsCard: React.FC = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
-    // setIsFetching(true);
-    ApiService.getNotifications(CredentialsService.getUserId()).subscribe({
+    ApiService.getNotifications$(CredentialsService.getUserId()).subscribe({
 
       next(x) {
         setRequestsList(x);

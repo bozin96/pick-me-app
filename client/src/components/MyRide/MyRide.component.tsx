@@ -17,8 +17,8 @@ const MyRide: React.FC<MyRideInterface> = (props: MyRideInterface) => {
 
     const handleRateDriver = (event: any, data: RatingProps): void => {
         const { rating } = data;
-        ApiService.rateRide(rideId, rating as number, id).subscribe({
-            next(x) {
+        ApiService.rateRide$(rideId, rating as number, id).subscribe({
+            next() {
                 setReview(rating as number);
                 toast.success('Successfully Rated Ride');
             },

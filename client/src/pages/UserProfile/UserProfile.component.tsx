@@ -36,7 +36,7 @@ const UserProfile: React.FC = () => {
     useEffect(() => {
         const loadUserData = (): void => {
             setFetchingInfo(true);
-            ApiService.getUser(id).subscribe({
+            ApiService.getUser$(id).subscribe({
                 next(res: User) {
                     const {
                         firstName,
@@ -58,6 +58,7 @@ const UserProfile: React.FC = () => {
                             ? `data:image/png;base64,${userPhoto}`
                             : 'https://react.semantic-ui.com/images/wireframe/image.png',
                     } as User;
+
                     setUserInfo(data);
                     setFormState(data);
                     setFetchingInfo(false);
@@ -81,6 +82,7 @@ const UserProfile: React.FC = () => {
             [e.target.name]: e.target.value,
         }));
     }, []);
+
     const onFileChange = useCallback((e) => {
         const file = e.target.files[0];
         const reader = new FileReader();
@@ -95,28 +97,24 @@ const UserProfile: React.FC = () => {
         setFormState(userInfo);
     };
     const handleOnSubmit = (): void => {
-        if (!editMode) {
-            setEditMode((prev: boolean) => !prev);
-        } else {
-            const { userPhoto } = formState;
-            const submitObject = {
-                ...formState,
-                userPhoto: userPhoto ? userPhoto.split(',')[1] : '',
-            };
-            setFormSubmitting(true);
-            ApiService.updateUser(id, submitObject).subscribe({
-                next(x) {
-                    userInfoSubject.next(formState);
-                    setEditMode(false);
-                    setFormSubmitting(false);
-                    setUserInfo(formState);
-                },
-                error(err) {
-                    toast('Error Occured');
-                    setFormSubmitting(false);
-                },
-            });
-        }
+        const { userPhoto } = formState;
+        const submitObject = {
+            ...formState,
+            userPhoto: userPhoto ? userPhoto.split(',')[1] : '',
+        };
+        setFormSubmitting(true);
+        ApiService.updateUser$(id, submitObject).subscribe({
+            next() {
+                userInfoSubject.next(formState);
+                setEditMode(false);
+                setFormSubmitting(false);
+                setUserInfo(formState);
+            },
+            error() {
+                toast('Error Occured');
+                setFormSubmitting(false);
+            },
+        });
     };
     const fileInputRef = useRef<any>();
 
@@ -189,20 +187,20 @@ const UserProfile: React.FC = () => {
                     </Card.Content>
                     {!editMode && (
                         <Card.Content extra>
-                             {`${userInfo?.averageRate} / 5`}
-                        <Icon name="star" />
-                        {` from ${userInfo?.numberOfRates} rates`}
+                            {`${userInfo?.averageRate} / 5`}
+                            <Icon name="star" />
+                            {` from ${userInfo?.numberOfRates} rates`}
                         </Card.Content>
                     )}
                     {isMe && (
                         <Card.Content extra>
                             {!editMode ? (
-                                <Button type="submit">Edit</Button>
+                                <button type="button" className="pm-edit-button" onClick={() => setEditMode(true)}>Edit</button>
                             ) : (
                                 <>
-                                    <Button basic loading={formSubmitting} type="button" onClick={handleFormReset} color="red">
+                                    <button type="button" onClick={handleFormReset} className="pm-discard-button">
                                         Discard
-                                    </Button>
+                                    </button>
                                     <Button type="submit" loading={formSubmitting} color="green">
                                         Save
                                     </Button>

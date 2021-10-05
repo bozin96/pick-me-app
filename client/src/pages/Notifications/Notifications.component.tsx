@@ -23,7 +23,7 @@ const Notifications: React.FC = () => {
     }, [newNotificationObserver$]);
 
     useEffect(() => {
-        const subscription = ApiService.getNotifications(CredentialsService.getUserId()).subscribe((res) => {
+        const subscription = ApiService.getNotifications$(CredentialsService.getUserId()).subscribe((res) => {
             setNotificaitons(res as any);
         });
         return () => {
@@ -34,7 +34,7 @@ const Notifications: React.FC = () => {
     const baseClass = 'pm-notifications';
     return (
         <div className={baseClass}>
-            {notifications.map((req:any) => {
+            {notifications.map((req: any) => {
                 if (req.type === 'RequestForRide') {
                     return <RideRequest {...req} />;
                 }

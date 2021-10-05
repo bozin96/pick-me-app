@@ -15,14 +15,9 @@ const SignUpForm: React.FC = (props) => {
         password: '',
         confirmPassword: '',
     });
-    const [formError, setFormError] = useState<string|undefined>();
+    const [formError, setFormError] = useState<string | undefined>();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (formError) {
-            setFormError(undefined);
-        }
-    }, [formState, formError]);
     const handleOnChange = useCallback((e) => setFormState((prev) => ({
         ...prev,
         [e.target.name]: e.target.value,
@@ -31,7 +26,7 @@ const SignUpForm: React.FC = (props) => {
     const handleOnSubmit = (): void => {
         setIsSubmitting(true);
 
-        ApiService.register(formState).subscribe({
+        ApiService.register$(formState).subscribe({
             next(data: AuthApiResponse) {
                 const { token, userId } = data;
                 CredentialsService.setToken(token);
@@ -60,6 +55,13 @@ const SignUpForm: React.FC = (props) => {
             },
         });
     };
+
+    useEffect(() => {
+        if (formError) {
+            setFormError(undefined);
+        }
+    }, [formState, formError]);
+
     return (
         <Form onSubmit={handleOnSubmit}>
             <Header as="h2">Sign Up</Header>

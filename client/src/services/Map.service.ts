@@ -23,7 +23,6 @@ const loadBingApi = (key?: string): Promise<void> => {
         script.src = url;
         window.bingAPIReady = () => {
             Microsoft = window.Microsoft;
-
             resolve();
         };
         script.onerror = (error: any) => {

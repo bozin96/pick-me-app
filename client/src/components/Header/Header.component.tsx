@@ -20,7 +20,7 @@ const Header: React.FC = () => {
 
     useEffect(() => {
         const loadUserData = (): void => {
-            ApiService.getUser(userId).subscribe((res: User): void => {
+            ApiService.getUser$(userId).subscribe((res: User): void => {
                 const { userPhoto: photo, firstName, lastName } = res;
                 setUserName(`${firstName} ${lastName}`);
                 setUserPhoto(`data:image/png;base64,${photo}`);
@@ -42,6 +42,7 @@ const Header: React.FC = () => {
     useEffect(() => {
         setIsAuthorized(!!token && !!userId);
     }, [token, userId]);
+
     return (
         <SemnaticHeader className="pm-header">
             <Menu horizontal>

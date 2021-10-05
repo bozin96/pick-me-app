@@ -22,7 +22,7 @@ const SignInForm: React.FC = () => {
 
     const handleOnSubmit = (): void => {
         setIsSubmitting(true);
-        ApiService.login(formState).subscribe({
+        ApiService.login$(formState).subscribe({
             next(data: AuthApiResponse) {
                 const { token, userId } = data;
                 CredentialsService.setToken(token);
@@ -46,7 +46,6 @@ const SignInForm: React.FC = () => {
                 setFormError(errorMessage);
                 setIsSubmitting(false);
             },
-
             complete() {
                 setIsSubmitting(false);
             },

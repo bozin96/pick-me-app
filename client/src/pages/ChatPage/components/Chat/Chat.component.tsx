@@ -69,8 +69,8 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
     useEffect(() => {
         const fetchMessages = (): void => {
             setFetchingMessages(true);
-            ApiService.getChatMessages(chatId, params).subscribe((res: IChatMessage[]): void => {
-                setChatMessages((prev: any) => ([...prev, ...res]));
+            ApiService.getChatMessages$(chatId, params).subscribe((res: IChatMessage[]): void => {
+                setChatMessages((prev: any) => ([...res, ...prev]));
                 setFetchingMessages(false);
             });
         };
@@ -91,7 +91,7 @@ const Chat: React.FC<ChatProps> = (props: ChatProps) => {
 
     useEffect(() => {
         if (params.pageSize === 10 && params.pageNumber === 1 && chatMessages.length) {
-                updateScroll();
+            updateScroll();
         }
     }, [params, chatMessages]);
 

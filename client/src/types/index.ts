@@ -69,7 +69,7 @@ export interface User {
     firstName: string,
     id: string,
     lastName: string,
-    middleName: null,
+    middleName: string,
     numberOfRates: number
     userPhoto: string | null
 }

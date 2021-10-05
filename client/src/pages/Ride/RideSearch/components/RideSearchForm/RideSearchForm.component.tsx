@@ -66,7 +66,7 @@ const RideSearchForm: React.FC = () => {
             endLatitude,
             dateTime,
         });
-        ApiService.getRides({
+        ApiService.getRides$({
             startLongitude,
             startLatitude,
             endLongitude,

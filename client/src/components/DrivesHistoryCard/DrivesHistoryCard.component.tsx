@@ -10,18 +10,17 @@ import CredentialsService from '../../services/Credentials.service';
 import { MyDriveInterface } from '../../types';
 import MyDrive from '../MyDrive';
 
-const DrivingHistoryCard: React.FC = () => {
-  const [rides, setRides] = useState<MyDriveInterface[]>([]);
+const DrivesHistoryCard: React.FC = () => {
+  const [drives, setDrives] = useState<MyDriveInterface[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
     setIsFetching(true);
     const userId = CredentialsService.getUserId();
-    ApiService.getUserRidesAsDriver(userId, {})
-      // .pipe(map((res) => res.slice(0, 5)))
+    ApiService.getUserRidesAsDriver$(userId, {})
       .subscribe({
         next(x) {
-          setRides(x);
+          setDrives(x);
           setIsFetching(false);
         },
         error() {
@@ -34,7 +33,7 @@ const DrivingHistoryCard: React.FC = () => {
   }, []);
   return (
     <Dimmer.Dimmable as={Segment} dimmed={isFetching}>
-      {rides.map((el) => (
+      {drives.map((el) => (
         <MyDrive {...el} />
       ))}
       <Dimmer active={isFetching}>
@@ -46,4 +45,4 @@ const DrivingHistoryCard: React.FC = () => {
   );
 };
 
-export default DrivingHistoryCard;
+export default DrivesHistoryCard;

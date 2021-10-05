@@ -26,4 +26,24 @@
             }
         }
     }
+    .pm-discard-button {
+        width: 120px;
+        background-color: white;
+        box-shadow: 0 0 0 1px #db2828 inset !important;
+        color: #db2828 !important;
+        border: none;
+        height: 32px;
+        border-radius: 4px;
+        margin-right: 16px;
+    }
+    .pm-edit-button {
+        width: 120px;
+        background-color: white;
+        box-shadow: 0 0 0 1px gray inset !important;
+        color: gray !important;
+        border: none;
+        height: 32px;
+        border-radius: 4px;
+        margin-right: 16px;
+    }
 }

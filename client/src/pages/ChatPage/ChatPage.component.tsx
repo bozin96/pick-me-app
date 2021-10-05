@@ -28,6 +28,7 @@ const ChatPage: React.FC = () => {
     const {
         openChat$, newUnreadedMessage$, newChatRequest$, closeChat$,
     } = useChat();
+
     const [value, setValue] = useDebounce<string>(1000, searchValue);
     const previousChatId = usePrevious<string>(selectedChat);
 
@@ -62,11 +63,11 @@ const ChatPage: React.FC = () => {
     }, [newChatRequest$]);
 
     useEffect(() => {
-        ApiService.getChats(value || undefined).subscribe((res: IChat[]): void => setChatState(res));
+        ApiService.getChats$(value || undefined).subscribe((res: IChat[]): void => setChatState(res));
     }, [value]);
 
     useEffect(() => {
-        const subscription = newUnreadedMessage$.subscribe((chatInfo:OtherChatMessageReceive) => {
+        const subscription = newUnreadedMessage$.subscribe((chatInfo: OtherChatMessageReceive) => {
             toast.success('New Message Received');
             const { chatId: chatIdToUpdate } = chatInfo;
             setChatState((prev: IChat[]) => prev.map((chatState: IChat) => (chatState.chatId === chatIdToUpdate

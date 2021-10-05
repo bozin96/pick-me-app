@@ -11,7 +11,6 @@ const axiosInstance = Axios.create({
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // Do something before request is sent
-    // If the header does not contain the token and the url not public, redirect to login
 
     const token = CredentialsService.getToken();
     if (token && config.method !== 'OPTIONS') {
@@ -28,6 +27,7 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response && [401, 403].includes(error.response.status)) {
       if (error.response.data?.error === 'Wrong username or password') {
+        // eslint-disable-next-line no-console
         console.error(error.response.data);
       } else {
         toast('Unathorized');

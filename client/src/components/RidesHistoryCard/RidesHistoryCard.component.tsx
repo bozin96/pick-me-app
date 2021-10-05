@@ -17,7 +17,7 @@ const RidesHistoryCard: React.FC = () => {
   useEffect(() => {
     setIsFetching(true);
     const userId = CredentialsService.getUserId();
-    ApiService.getUserRidesAsPassenger(userId)
+    ApiService.getUserRidesAsPassenger$(userId)
       .subscribe({
         next(x) {
           setRides(x);

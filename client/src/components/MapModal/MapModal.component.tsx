@@ -10,12 +10,13 @@ import { RouteLeg, Waypoint } from '../../types';
 type MapModalProps = {
     waypoints: Waypoint[],
     routeLegs: RouteLeg[],
-    routeIndex:number,
+    routeIndex: number,
 }
 const MapModal: React.FC<Partial<MapModalProps>> = (props: Partial<MapModalProps>) => {
     const { waypoints = [], routeIndex } = props;
     const [map, setMap] = useState<any>();
     const [open, setOpen] = React.useState(false);
+
     useLayoutEffect(() => {
         const initMap = (): void => {
             MapService.loadBingApi('AsrEpVFLl4bpmG5EUAggr91gdwpbwDfzb74vFXC_bFmAeTWSQnINDulRiswel16H').then((res: any) => {
@@ -26,6 +27,7 @@ const MapModal: React.FC<Partial<MapModalProps>> = (props: Partial<MapModalProps
         };
         if (open) initMap();
     }, [open]);
+
     useEffect(() => {
         const refreshMap = (): void => {
             Microsoft.Maps.loadModule('Microsoft.Maps.Directions', (): void => {
@@ -60,6 +62,7 @@ const MapModal: React.FC<Partial<MapModalProps>> = (props: Partial<MapModalProps
             refreshMap();
         }
     }, [waypoints, map, routeIndex]);
+
     return (
         <Modal
             onClose={() => setOpen(false)}

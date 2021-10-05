@@ -7,7 +7,7 @@ import MapModal from '../MapModal';
 import './MyDrive.styles.scss';
 
 const MyDrive: React.FC<MyDriveInterface> = (props: MyDriveInterface) => {
-    const { waypoints = [], routeLegs } = props;
+    const { waypoints = [], routeLegs, routeIndex } = props;
 
     const startLocation = useMemo(() => waypoints[0]?.address, [waypoints]);
     const endLocation = useMemo(() => waypoints[waypoints.length - 1]?.address, [waypoints]);
@@ -18,7 +18,6 @@ const MyDrive: React.FC<MyDriveInterface> = (props: MyDriveInterface) => {
                     <List>
                         <List.Item>
                             <Icon name="marker" />
-
                             <List.Content>
                                 {startLocation}
                             </List.Content>
@@ -45,7 +44,7 @@ const MyDrive: React.FC<MyDriveInterface> = (props: MyDriveInterface) => {
                         </List.Item>
                     </List>
 
-                    <MapModal waypoints={waypoints} routeLegs={routeLegs} routeIndex={0} />
+                    <MapModal waypoints={waypoints} routeLegs={routeLegs} routeIndex={routeIndex} />
                 </Header>
             </Card.Content>
         </Card>

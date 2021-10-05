@@ -9,7 +9,7 @@ class SingnalRService {
 
     get connection(): HubConnectionBuilder { return SingnalRService.connection; }
 
-   set connection(val: HubConnectionBuilder) { SingnalRService.connection = val; }
+    set connection(val: HubConnectionBuilder) { SingnalRService.connection = val; }
 
     constructor() {
         SingnalRService.connection = new HubConnectionBuilder().withUrl(`${url}/notifications`, {
